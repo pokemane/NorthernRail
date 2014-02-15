@@ -1,0 +1,16 @@
+[
+{
+  "modid": "NorthernRail",
+  "name": "Northern Rail",
+  "description": "Rail mod.",
+  "version": "${version}",
+  "mcversion": "${mcversion}",
+  "url": "",
+  "updateUrl": "",
+  "authors": ["pokemane"],
+  "credits": "Ebeef, skyboy, kobata, technic guys, genpage",
+  "logoFile": "",
+  "screenshots": [],
+  "dependencies": []
+}
+]
