@@ -1,6 +1,7 @@
 package pokemane.northernrail.common;
 
 import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 
 /**
@@ -16,6 +17,6 @@ public class CreativeTabNR extends CreativeTabs {
     @Override
     public Item getTabIconItem() {
         //TODO add an item to display here
-        return null;
+        return Item.getItemFromBlock(Blocks.activator_rail);
     }
 }

@@ -8,7 +8,10 @@ import cpw.mods.fml.common.SidedProxy;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
+import cpw.mods.fml.common.registry.GameRegistry;
+import net.minecraft.block.Block;
 import net.minecraft.creativetab.CreativeTabs;
+import pokemane.northernrail.common.block.rail.TestRail;
 import pokemane.northernrail.util.network.packet.PacketPipeline;
 
 /**
@@ -21,7 +24,7 @@ import pokemane.northernrail.util.network.packet.PacketPipeline;
 public class NorthernRailLoader {
 
     @Instance(NorthernRail.CHANNEL)
-    public static NorthernRail instance;
+    public static NorthernRailLoader instance;
 
     @SidedProxy(clientSide = "pokemane.northernrail.client.ClientProxy", serverSide = "pokemane.northernrail.common.CommonProxy")
     public static CommonProxy proxy;
@@ -33,6 +36,8 @@ public class NorthernRailLoader {
 
     public static CreativeTabs creativeTabNR = new CreativeTabNR(CreativeTabs.getNextID(),NorthernRail.MODNAME);
 
+    public static Block newRail;
+
     @EventHandler
     public void load(FMLInitializationEvent initializationEvent){
         packetPipeline.initalize();
@@ -40,8 +45,9 @@ public class NorthernRailLoader {
     }
 
     @EventHandler
-    public void preInit(FMLPreInitializationEvent preInitializationEvent){
-
+    public void preinit(FMLPreInitializationEvent preInitializationEvent){
+        newRail = (new TestRail()).setBlockName("NewRail").setBlockTextureName("rail_normal").setCreativeTab(creativeTabNR);
+        GameRegistry.registerBlock(newRail,"New Rail");
     }
 
     @EventHandler

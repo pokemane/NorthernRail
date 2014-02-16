@@ -2,6 +2,7 @@ package pokemane.northernrail.api.rail;
 
 
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockRailBase;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.item.EntityMinecart;
 import net.minecraft.util.AxisAlignedBB;
@@ -10,7 +11,6 @@ import net.minecraft.util.Vec3;
 import net.minecraft.world.ChunkPosition;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
-import net.minecraft.world.chunk.Chunk;
 import pokemane.northernrail.common.NorthernRailLoader;
 
 import java.util.ArrayList;
@@ -20,11 +20,11 @@ import java.util.Random;
 /**
  * Created by pokemane on 2/15/14.
  */
-public abstract class NRRailBase extends Block implements IRail{
+public abstract class NRRailBase extends BlockRailBase implements IRail{
 
     protected final boolean powered;
     protected NRRailBase(boolean poweredState){
-        super(Material.circuits);
+        super(poweredState);
         this.powered = poweredState;
         this.setBlockBounds(0.0F, 0.0F, 0.0F, 1.0F, 0.125F, 1.0F);
         this.setCreativeTab(NorthernRailLoader.creativeTabNR);
@@ -151,7 +151,7 @@ public abstract class NRRailBase extends Block implements IRail{
     @Override
     public void func_150052_a(World world, int x, int y, int z, boolean par6) {
         if (!world.isRemote){
-
+            new NRRailLogic(world,x,y,z).func_150655_a(world.isBlockIndirectlyGettingPowered(x, y, z), par6);
         }
     }
 
@@ -162,27 +162,50 @@ public abstract class NRRailBase extends Block implements IRail{
 
     @Override
     public void breakBlock(World world, int x, int y, int z, Block oldBlock, int oldMetadata) {
+        int i1 = oldMetadata;
 
+        if (this.field_150053_a)
+        {
+            i1 = oldMetadata & 7;
+        }
+
+        super.breakBlock(world, x, x, x, oldBlock, oldMetadata);
+
+        if (i1 == 2 || i1 == 3 || i1 == 4 || i1 == 5)
+        {
+            world.notifyBlocksOfNeighborChange(x, x + 1, x, oldBlock);
+        }
+
+        if (this.field_150053_a)
+        {
+            world.notifyBlocksOfNeighborChange(x, x, x, oldBlock);
+            world.notifyBlocksOfNeighborChange(x, x - 1, x, oldBlock);
+        }
     }
 
     @Override
     public boolean isFlexibleRail(IBlockAccess iBlockAccess, int x, int y, int z) {
-        return false;
+        return isPowered();
     }
 
     @Override
     public boolean canMakeSlopes(IBlockAccess iBlockAccess, int x, int y, int z) {
-        return false;
+        return true;
     }
 
     @Override
     public int getBasicRailMetadata(IBlockAccess iBlockAccess, EntityMinecart cart, int x, int y, int z) {
-        return 0;
+        int meta = iBlockAccess.getBlockMetadata(x, y, z);
+        if(isPowered())
+        {
+            meta = meta & 7;
+        }
+        return meta;
     }
 
     @Override
     public float getMaxRailSpeed(World world, EntityMinecart cart, int x, int y, int z) {
-        return 0;
+        return 0.4f;
     }
 
     @Override
@@ -197,6 +220,7 @@ public abstract class NRRailBase extends Block implements IRail{
         renderType = value;
     }
 
+    /*============================================================================*/
     public class NRRailLogic{
         private final NRRailBase theBlock;
         private final int blockMetadata;
@@ -305,6 +329,255 @@ public abstract class NRRailBase extends Block implements IRail{
             return false;
         }
 
-        private boolean isPartOfTrack
+        private boolean isPartOfTrack(int x, int y, int z){
+            for (Object aRailChunkPosition : this.railChunkPosition) {
+                ChunkPosition chunkPosition = (ChunkPosition) aRailChunkPosition;
+                if (chunkPosition.chunkPosX == x && chunkPosition.chunkPosZ == z) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        public int getNumberOfAdjacentTracks(){
+            int i = 0;
+            if (this.isMinecartTrack(this.railX, this.railY, this.railZ - 1))
+            {
+                ++i;
+            }
+
+            if (this.isMinecartTrack(this.railX, this.railY, this.railZ + 1))
+            {
+                ++i;
+            }
+
+            if (this.isMinecartTrack(this.railX - 1, this.railY, this.railZ))
+            {
+                ++i;
+            }
+
+            if (this.isMinecartTrack(this.railX + 1, this.railY, this.railZ))
+            {
+                ++i;
+            }
+
+            return i;
+        }
+
+        private boolean canConnectTo(NRRailLogic nrRailLogic){
+            return this.isRailChunkPositionCorrect(nrRailLogic) || (this.railChunkPosition.size() != 2);
+        }
+
+        private void connectToNeighbor(NRRailLogic nrRailLogic){
+            this.railChunkPosition.add(new ChunkPosition(nrRailLogic.railX, nrRailLogic.railY, nrRailLogic.railZ));
+            boolean flag = this.isPartOfTrack(this.railX,this.railY,this.railZ-1);
+            boolean flag1 = this.isPartOfTrack(this.railX,this.railY,this.railZ+1);
+            boolean flag2 = this.isPartOfTrack(this.railX - 1, this.railY, this.railZ);
+            boolean flag3 = this.isPartOfTrack(this.railX + 1, this.railY, this.railZ);
+            byte b0 = -1;
+
+            if (flag || flag1){
+                b0 = 0;
+            }
+
+            if (flag2 || flag3){
+                b0 = 1;
+            }
+
+            if (!this.isStraightRail){
+                if (flag1 && flag3 && !flag && !flag2){
+                    b0 = 6;
+                }
+
+                if (flag1 && flag2 && !flag && !flag3){
+                    b0 = 7;
+                }
+
+                if (flag && flag2 && !flag1 && !flag3){
+                    b0 = 8;
+                }
+
+                if (flag && flag3 && !flag1 && !flag2){
+                    b0 = 9;
+                }
+            }
+
+            if (b0 == 0 && canMakeSlopes){
+                if (isRailBlockAt(this.railLogicWorld, this.railX, this.railY + 1, this.railZ - 1)){
+                    b0 = 4;
+                }
+
+                if (isRailBlockAt(this.railLogicWorld, this.railX, this.railY + 1, this.railZ + 1)){
+                    b0 = 5;
+                }
+            }
+
+            if (b0 == 1 && canMakeSlopes){
+                if (isRailBlockAt(this.railLogicWorld, this.railX + 1, this.railY + 1, this.railZ)){
+                    b0 = 2;
+                }
+
+                if (isRailBlockAt(this.railLogicWorld, this.railX - 1, this.railY + 1, this.railZ)){
+                    b0 = 3;
+                }
+            }
+
+            if (b0 < 0){
+                b0 = 0;
+            }
+
+            int i = b0;
+
+            if (this.isStraightRail){
+                i = this.railLogicWorld.getBlockMetadata(this.railX, this.railY, this.railZ) & 8 | b0;
+            }
+
+            this.railLogicWorld.setBlockMetadataWithNotify(this.railX, this.railY, this.railZ, i, 3);
+        }
+
+        private boolean canConnectFrom(int x, int y, int z){
+            NRRailLogic nrRailLogic = this.getRailLogic(new ChunkPosition(x,y,z));
+            if (nrRailLogic == null){
+                return false;
+            }
+            else {
+                nrRailLogic.refreshConnectedTracks();
+                return nrRailLogic.canConnectTo(this);
+            }
+        }
+
+
+        /**
+         * I think this is something to do with determining where we can connect to, after the rail gets an RS signal.
+         * @param par1 seems to be "is receiving power"
+         * @param par2
+         */
+        public void func_150655_a(boolean par1, boolean par2){
+            boolean flag2 = this.canConnectFrom(this.railX, this.railY, this.railZ - 1);
+            boolean flag3 = this.canConnectFrom(this.railX, this.railY, this.railZ + 1);
+            boolean flag4 = this.canConnectFrom(this.railX - 1, this.railY, this.railZ);
+            boolean flag5 = this.canConnectFrom(this.railX + 1, this.railY, this.railZ);
+            byte b0 = -1;
+
+            if ((flag2 || flag3) && !flag4 && !flag5){
+                b0 = 0;
+            }
+
+            if ((flag4 || flag5) && !flag2 && !flag3){
+                b0 = 1;
+            }
+
+            if (!this.isStraightRail){
+                if (flag3 && flag5 && !flag2 && !flag4){
+                    b0 = 6;
+                }
+
+                if (flag3 && flag4 && !flag2 && !flag5){
+                    b0 = 7;
+                }
+
+                if (flag2 && flag4 && !flag3 && !flag5){
+                    b0 = 8;
+                }
+
+                if (flag2 && flag5 && !flag3 && !flag4){
+                    b0 = 9;
+                }
+            }
+
+            if (b0 == -1){
+                if (flag2 || flag3){
+                    b0 = 0;
+                }
+
+                if (flag4 || flag5){
+                    b0 = 1;
+                }
+
+                if (!this.isStraightRail){
+                    if (par1){
+                        if (flag3 && flag5){
+                            b0 = 6;
+                        }
+
+                        if (flag4 && flag3){
+                            b0 = 7;
+                        }
+
+                        if (flag5 && flag2){
+                            b0 = 9;
+                        }
+
+                        if (flag2 && flag4){
+                            b0 = 8;
+                        }
+                    }
+                    else {
+                        if (flag2 && flag4){
+                            b0 = 8;
+                        }
+
+                        if (flag5 && flag2){
+                            b0 = 9;
+                        }
+
+                        if (flag4 && flag3){
+                            b0 = 7;
+                        }
+
+                        if (flag3 && flag5){
+                            b0 = 6;
+                        }
+                    }
+                }
+            }
+
+            if (b0 == 0 && canMakeSlopes){
+                if (isRailBlockAt(this.railLogicWorld, this.railX, this.railY + 1, this.railZ - 1)){
+                    b0 = 4;
+                }
+
+                if (isRailBlockAt(this.railLogicWorld, this.railX, this.railY + 1, this.railZ + 1)){
+                    b0 = 5;
+                }
+            }
+
+            if (b0 == 1 && canMakeSlopes){
+                if (isRailBlockAt(this.railLogicWorld, this.railX + 1, this.railY + 1, this.railZ)){
+                    b0 = 2;
+                }
+
+                if (isRailBlockAt(this.railLogicWorld, this.railX - 1, this.railY + 1, this.railZ)){
+                    b0 = 3;
+                }
+            }
+
+            if (b0 < 0){
+                b0 = 0;
+            }
+
+            this.setBasicRail(b0);
+            int i = b0;
+
+            if (this.isStraightRail){
+                i = this.railLogicWorld.getBlockMetadata(this.railX, this.railY, this.railZ) & 8 | b0;
+            }
+
+            if (par2 || this.railLogicWorld.getBlockMetadata(this.railX, this.railY, this.railZ) != i){
+                this.railLogicWorld.setBlockMetadataWithNotify(this.railX, this.railY, this.railZ, i, 3);
+
+                for (Object aRailChunkPosition : this.railChunkPosition) {
+                    NRRailLogic nrRailLogic = this.getRailLogic((ChunkPosition) aRailChunkPosition);
+
+                    if (nrRailLogic != null) {
+                        nrRailLogic.refreshConnectedTracks();
+
+                        if (nrRailLogic.canConnectTo(this)) {
+                            nrRailLogic.connectToNeighbor(this);
+                        }
+                    }
+                }
+            }
+        }
     }
 }
