@@ -151,7 +151,11 @@ public abstract class NRRailBase extends BlockRailBase implements IRail{
     @Override
     public void func_150052_a(World world, int x, int y, int z, boolean par6) {
         if (!world.isRemote){
+<<<<<<< HEAD
             new NRRailLogic(world,x,y,z).func_150655_a(world.isBlockIndirectlyGettingPowered(x, y, z), par6);
+=======
+            new NRRailLogic(world,x,y,z).func_150655_a(world.isBlockIndirectlyGettingPowered(x,y,z),par6);
+>>>>>>> bbbcbbaeac8cb623b348bf5758234cf32df449ba
         }
     }
 
@@ -229,7 +233,7 @@ public abstract class NRRailBase extends BlockRailBase implements IRail{
         private int railY;
         private int railZ;
         private final boolean isStraightRail;
-        private List railChunkPosition = new ArrayList();
+        private List railChunkPosition;
         private final boolean canMakeSlopes;
 
         public NRRailLogic(World world, int x, int y, int z){
