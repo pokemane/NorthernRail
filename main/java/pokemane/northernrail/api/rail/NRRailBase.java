@@ -164,7 +164,7 @@ public abstract class NRRailBase extends BlockRailBase implements IRail{
     public void breakBlock(World world, int x, int y, int z, Block oldBlock, int oldMetadata) {
         int i1 = oldMetadata;
 
-        if (this.field_150053_a)
+        if (this.powered)
         {
             i1 = oldMetadata & 7;
         }
@@ -176,7 +176,7 @@ public abstract class NRRailBase extends BlockRailBase implements IRail{
             world.notifyBlocksOfNeighborChange(x, x + 1, x, oldBlock);
         }
 
-        if (this.field_150053_a)
+        if (this.powered)
         {
             world.notifyBlocksOfNeighborChange(x, x, x, oldBlock);
             world.notifyBlocksOfNeighborChange(x, x - 1, x, oldBlock);
@@ -229,7 +229,7 @@ public abstract class NRRailBase extends BlockRailBase implements IRail{
         private int railY;
         private int railZ;
         private final boolean isStraightRail;
-        private List railChunkPosition = new ArrayList();
+        private List<ChunkPosition> railChunkPosition = new ArrayList<ChunkPosition>();
         private final boolean canMakeSlopes;
 
         public NRRailLogic(World world, int x, int y, int z){
@@ -301,7 +301,7 @@ public abstract class NRRailBase extends BlockRailBase implements IRail{
 
         private void refreshConnectedTracks(){
             for (int i = 0; i < this.railChunkPosition.size(); ++i){
-                NRRailLogic railLogic = this.getRailLogic((ChunkPosition)this.railChunkPosition);
+                NRRailLogic railLogic = this.getRailLogic(this.railChunkPosition.get(i));
                 if (railLogic != null && railLogic.isRailChunkPositionCorrect(this)){
                     this.railChunkPosition.set(i, new ChunkPosition(railLogic.railX,railLogic.railY,railLogic.railZ));
                 }
@@ -321,7 +321,7 @@ public abstract class NRRailBase extends BlockRailBase implements IRail{
 
         private boolean isRailChunkPositionCorrect(NRRailLogic nrRailLogic){
             for (int i = 0; i < this.railChunkPosition.size(); ++i){
-                ChunkPosition chunkPosition = (ChunkPosition)this.railChunkPosition.get(i);
+                ChunkPosition chunkPosition = this.railChunkPosition.get(i);
                 if (chunkPosition.chunkPosX == nrRailLogic.railX && chunkPosition.chunkPosZ == nrRailLogic.railZ){
                     return true;
                 }
