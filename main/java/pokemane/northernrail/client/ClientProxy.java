@@ -12,7 +12,12 @@ import pokemane.northernrail.common.NorthernRailLoader;
 public class ClientProxy extends CommonProxy {
 
 
+
+
     public static void init(){
+        //Axe this stuff for right now, I don't really need a special renderer for my stuff.  Yet.
+        //NorthernRail.renderIdRail = RenderingRegistry.getNextAvailableRenderId();
+        //RenderingRegistry.registerBlockHandler(NorthernRail.renderIdRail, new RenderRail());
     }
 
     @Override

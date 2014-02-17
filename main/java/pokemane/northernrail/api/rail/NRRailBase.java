@@ -20,9 +20,11 @@ import java.util.Random;
 public abstract class NRRailBase extends BlockRailBase implements IRail{
 
     protected final boolean isPoweredRail;
+    protected boolean isBeingPowered;
     protected NRRailBase(boolean powered){
         super(powered);
         this.isPoweredRail = powered;
+        this.isBeingPowered = false;
         this.setBlockBounds(0.0F, 0.0F, 0.0F, 1.0F, 0.125F, 1.0F);
         this.setCreativeTab(NorthernRailLoader.creativeTabNR);
     }
@@ -122,6 +124,7 @@ public abstract class NRRailBase extends BlockRailBase implements IRail{
 
     @Override
     public void onNeighborBlockChange(World world, int x, int y, int z, Block neighborBlock) {
+        this.isBeingPowered = world.isBlockIndirectlyGettingPowered(x,y,z);
         if (!world.isRemote){
             int blockMetadata = world.getBlockMetadata(x,y,z);
             int newMeta = blockMetadata;
@@ -344,7 +347,12 @@ public abstract class NRRailBase extends BlockRailBase implements IRail{
             }
 
             if ((meta & 8) != 0){
-                return world.isBlockIndirectlyGettingPowered(x, y, z) || this.isConnectedRailPowered(world, x, y, z, meta, dir, distance + 1, maxDistance);
+                if (world.isBlockIndirectlyGettingPowered(x, y, z) || this.isConnectedRailPowered(world, x, y, z, meta, dir, distance + 1, maxDistance)){
+                    //slightly changed logic to show that the rail is indeed being powered since I can't figure how to
+                    //get the minecart to check it properly at the moment.
+                    this.isBeingPowered = true;
+                    return true;
+                }
 
             }
         }

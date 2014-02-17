@@ -4,8 +4,10 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.texture.IIconRegister;
+import net.minecraft.entity.item.EntityMinecart;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
+import net.minecraftforge.common.util.ForgeDirection;
 import pokemane.northernrail.api.rail.NRRailBase;
 
 /**
@@ -37,4 +39,35 @@ public class TestRail extends NRRailBase {
             this.refreshTrackShape(world,x,y,z,false);
         }
     }
+
+    @Override
+    public void onMinecartPass(World world, EntityMinecart cart, int x, int y, int z) {
+        NRRailBase railBlock = (NRRailBase)world.getBlock(x, y, z);
+        int meta = railBlock.getBasicRailMetadata(world,cart, x,y,z);
+        int dirMeta = meta & 7;
+        double cartSpeed = Math.sqrt(cart.motionX * cart.motionX + cart.motionZ * cart.motionZ);
+
+        if (dirMeta == 1){
+            if (world.isSideSolid(x-1,y,z, ForgeDirection.EAST)){
+                cart.motionX += 0.02D;
+            }
+            else if (world.isSideSolid(x+1,y,z,ForgeDirection.WEST)){
+                cart.motionX += -0.02D;
+            }
+
+       }
+        else if (dirMeta == 0){
+            if (world.isSideSolid(x,y,z-1, ForgeDirection.SOUTH)){
+                cart.motionZ += 0.02D;
+            }
+            else if (world.isSideSolid(x,y,z+1,ForgeDirection.NORTH)){
+                cart.motionZ += -0.02D;
+            }
+
+       }
+
+
+    }
+
+
 }

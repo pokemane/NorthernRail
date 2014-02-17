@@ -37,11 +37,11 @@ public class RenderRail implements ISimpleBlockRenderingHandler {
 
     private void renderRailWorld(RenderBlocks renderBlocks, IBlockAccess iBlockAccess, int blockX, int blockY, int blockZ, NRRailBase block, int modelId){
         Tessellator tessellator = Tessellator.instance;
-        int railMeta = block.getBasicRailMetadata(iBlockAccess, null, blockX, blockY, blockZ);
-        IIcon railTexture = renderBlocks.overrideBlockTexture != null ? renderBlocks.overrideBlockTexture : block.getBlockTextureFromSide(0);
+        int railMeta = iBlockAccess.getBlockMetadata(blockX,blockY,blockZ);
+        IIcon railTexture = block.getIcon(0, railMeta);
 
-        if ((block != null)){
-            railTexture = renderBlocks.getIconSafe(block.getIcon(0,railMeta));
+        if (renderBlocks.hasOverrideBlockTexture()){
+            railTexture = renderBlocks.overrideBlockTexture;
         }
         assert block != null;
         if (block.isPowered())
