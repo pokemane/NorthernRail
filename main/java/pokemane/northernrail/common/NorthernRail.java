@@ -31,4 +31,6 @@ public class NorthernRail {
 
     public static final String LANGUAGE_PATH = RESOURCE_PATH + "languages/";
     private static final String[] LANGUAGES_SUPPORTED = new String[] { "en_US" };
+
+    public static int renderIdRail = 9;
 }

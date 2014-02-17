@@ -33,8 +33,8 @@ public class TestRail extends NRRailBase {
 
     @Override
     public void func_150048_a(World world, int x, int y, int z, int side, int meta, Block block){
-        if (block.canProvidePower() && (new NRRailLogic(world,x,y,z).getNumberOfAdjacentTracks()) == 3){
-            this.func_150052_a(world,x,y,z,false);
+        if (block.canProvidePower() && (new NRRailLogic(world,x,y,z).countAdjacentRails()) == 3){
+            this.refreshTrackShape(world,x,y,z,false);
         }
     }
 }

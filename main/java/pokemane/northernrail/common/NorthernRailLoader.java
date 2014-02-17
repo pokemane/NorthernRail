@@ -1,5 +1,7 @@
 package pokemane.northernrail.common;
 
+import cpw.mods.fml.client.registry.ISimpleBlockRenderingHandler;
+import cpw.mods.fml.client.registry.RenderingRegistry;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.Mod.Instance;
@@ -11,8 +13,11 @@ import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.registry.GameRegistry;
 import net.minecraft.block.Block;
 import net.minecraft.creativetab.CreativeTabs;
+import pokemane.northernrail.api.rail.NRRailBase;
+import pokemane.northernrail.common.block.rail.TestPoweredRail;
 import pokemane.northernrail.common.block.rail.TestRail;
 import pokemane.northernrail.util.network.packet.PacketPipeline;
+
 
 /**
  * Created by pokemane on 2/15/14.
@@ -37,17 +42,19 @@ public class NorthernRailLoader {
     public static CreativeTabs creativeTabNR = new CreativeTabNR(CreativeTabs.getNextID(),NorthernRail.MODNAME);
 
     public static Block newRail;
+    public static Block newPoweredRail;
 
     @EventHandler
     public void load(FMLInitializationEvent initializationEvent){
         packetPipeline.initalize();
-
     }
 
     @EventHandler
     public void preinit(FMLPreInitializationEvent preInitializationEvent){
         newRail = (new TestRail()).setBlockName("NewRail").setBlockTextureName("rail_normal").setCreativeTab(creativeTabNR);
         GameRegistry.registerBlock(newRail,"New Rail");
+        newPoweredRail = (new TestPoweredRail()).setBlockName("NewPoweredRail").setBlockTextureName("rail_golden").setCreativeTab(creativeTabNR);
+        GameRegistry.registerBlock(newPoweredRail, "New Powered Rail");
     }
 
     @EventHandler

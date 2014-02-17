@@ -15,13 +15,18 @@ import java.util.Random;
  */
 public interface IRail {
     /**
-     * Returns true if the block at the coordinates of world passed is a valid rail block (current is rail, powered or
+     * Returns true if the block at the coordinates of world passed is a valid rail block (current is rail, isPoweredRail or
      * detector).
      */
     public abstract boolean isRailBlockAt(World world, int x, int y, int z);
 
+    public abstract int getX();
+    public abstract int getY();
+    public abstract int getZ();
+    public abstract World getWorld();
+
     /**
-     * Return true if the parameter is a blockID for a valid rail block (current is rail, powered or detector).
+     * Return true if the parameter is a blockID for a valid rail block (current is rail, isPoweredRail or detector).
      */
     public abstract boolean isRailBlock(Block block);
 
