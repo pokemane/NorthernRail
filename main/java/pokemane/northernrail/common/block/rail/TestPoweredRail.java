@@ -16,8 +16,10 @@ import pokemane.northernrail.api.rail.NRRailBase;
 public class TestPoweredRail extends NRRailBase {
     private IIcon theIcon;
     private int maxPropagationDistance = 12;
+	private boolean isBeingPowered;
     public TestPoweredRail(){
         super(true);
+	    this.isBeingPowered = false;
     }
 
     @SideOnly(Side.CLIENT)
@@ -53,6 +55,121 @@ public class TestPoweredRail extends NRRailBase {
             }
         }
     }
+
+	protected boolean isConnectedRailPowered(World world, int x, int y, int z, int meta, boolean dir, int distance, int maxDistance){
+		if (distance >= maxDistance){
+			return false;
+		}
+		else{
+			meta = meta & 7;
+			boolean powered = true;
+
+			switch (meta) {
+				case 0:
+					if (dir){
+						++z;
+					}
+					else{
+						--z;
+					}
+					break;
+				case 1:
+					if (dir){
+						--x;
+					}
+					else{
+						++x;
+					}
+
+					break;
+				case 2:
+					if (dir){
+						--x;
+					}
+					else{
+						++x;
+						++y;
+						powered = false;
+					}
+
+					meta = 1;
+					break;
+				case 3:
+					if (dir){
+						--x;
+						++y;
+						powered = false;
+					}
+					else{
+						++x;
+					}
+
+					meta = 1;
+					break;
+				case 4:
+					if (dir){
+						++z;
+					}
+					else{
+						--z;
+						++y;
+						powered = false;
+					}
+
+					meta = 0;
+					break;
+				case 5:
+					if (dir){
+						++z;
+						++y;
+						powered = false;
+					}
+					else{
+						--z;
+					}
+
+					meta = 0;
+			}
+
+			return this.testPowered(world, x, y, z, dir, distance, maxDistance, meta) || powered && this.testPowered(world, x, y - 1, z, dir, distance, maxDistance, meta);
+		}
+	}
+
+	protected boolean testPowerPropagation(World world, int x, int y, int z, int distance, int maxDistance, int orientation){
+		return (isConnectedRailPowered(world, x,y,z, orientation,true,distance,maxDistance) || isConnectedRailPowered(world,x,y,z,orientation,false,distance,maxDistance));
+	}
+
+	protected boolean testPowered(World world, int x, int y, int z, boolean dir, int distance, int maxDistance, int orientation){
+		Block block = world.getBlock(x, y, z);
+
+		if (block instanceof TestPoweredRail){
+			int meta = world.getBlockMetadata(x, y, z);
+			int meta1 = meta & 7;
+
+			if (orientation == 1 && (meta1 == 0 || meta1 == 4 || meta1 == 5)){
+				return false;
+			}
+
+			if (orientation == 0 && (meta1 == 1 || meta1 == 2 || meta1 == 3)){
+				return false;
+			}
+
+			if ((meta & 8) != 0){
+				if (world.isBlockIndirectlyGettingPowered(x, y, z) || this.isConnectedRailPowered(world, x, y, z, meta, dir, distance + 1, maxDistance)){
+					//slightly changed logic to show that the rail is indeed being powered since I can't figure how to
+					//get the minecart to check it properly at the moment.
+					this.isBeingPowered = true;
+					return true;
+				}
+				else {
+					this.isBeingPowered = false;
+				}
+
+			}
+		}
+
+		return false;
+	}
 
     @Override
     public void onMinecartPass(World world, EntityMinecart cart, int x, int y, int z) {
