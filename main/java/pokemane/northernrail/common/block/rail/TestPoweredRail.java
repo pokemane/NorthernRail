@@ -3,8 +3,11 @@ package pokemane.northernrail.common.block.rail;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockRailBase;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.item.EntityMinecart;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
@@ -14,58 +17,76 @@ import pokemane.northernrail.api.rail.NRRailBase;
  * Created by pokemane on 2/16/14.
  */
 public class TestPoweredRail extends NRRailBase {
-    private IIcon theIcon;
+    private IIcon poweredIcon;
     private int maxPropagationDistance = 12;
-	private boolean isBeingPowered;
     public TestPoweredRail(){
         super(true);
-	    this.isBeingPowered = false;
     }
 
     @SideOnly(Side.CLIENT)
     public IIcon getIcon(int side, int metadata){
-        return (metadata & 8) == 0 ? this.blockIcon : this.theIcon;
+        return (metadata & 8) == 0 ? this.blockIcon : this.poweredIcon;
     }
 
-    @SideOnly(Side.CLIENT)
+	@Override
+	@SideOnly(Side.CLIENT)
+	public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int p_149727_6_, float p_149727_7_, float p_149727_8_, float p_149727_9_) {
+		int meta = world.getBlockMetadata(x,y,z);
+		final String message = "meta: " + String.valueOf(meta);
+		ChatComponentText chatmessage = new ChatComponentText(message);
+		player.addChatComponentMessage(chatmessage);
+		return false;
+	}
+
+	@SideOnly(Side.CLIENT)
     public void registerBlockIcons(IIconRegister iconRegister){
         super.registerBlockIcons(iconRegister);
-        this.theIcon = iconRegister.registerIcon(this.getTextureName() + "_powered");
+        this.poweredIcon = iconRegister.registerIcon(this.getTextureName() + "_powered");
     }
 
 
-
-    public void func_150048_a(World world, int x, int y, int z, int oldMetadata, int newMetadata, Block block){
+	@Override
+    public void func_150048_a(World world, int x, int y, int z, int oldMetadata, int dirMeta, Block block){
         boolean flag = world.isBlockIndirectlyGettingPowered(x, y, z);
         flag = flag || this.isConnectedRailPowered(world, x, y, z, oldMetadata, true, 0, this.maxPropagationDistance) || this.isConnectedRailPowered(world, x, y, z, oldMetadata, false, 0, this.maxPropagationDistance);
         boolean flag1 = false;
+		//setting block metadata based on current state
+		//if we are getting powered indirectly and are not currently in the powered state
         if (flag && (oldMetadata & 8) == 0){
-            world.setBlockMetadataWithNotify(x, y, z, newMetadata | 8, 3);
+	        //set our "power" bit true
+            world.setBlockMetadataWithNotify(x, y, z, dirMeta | 8, 3);
             flag1 = true;
         }
+        //if we are not getting powered indirectly and are currently in the powered state
         else if (!flag && (oldMetadata & 8) != 0){
-            world.setBlockMetadataWithNotify(x, y, z, newMetadata, 3);
+	        //leave the current metadata as it is
+            world.setBlockMetadataWithNotify(x, y, z, dirMeta, 3);
             flag1 = true;
         }
+		//if we're being indirectly powered and we've set the metadata
         if (flag1){
+	        //notify blocks below our level we've changed
+	        //this causes other rails to connect to us if they're ascending to us
             world.notifyBlocksOfNeighborChange(x, y - 1, z, this);
-
-            if (newMetadata == 2 || newMetadata == 3 || newMetadata == 4 || newMetadata == 5){
+			//if we're ascending now
+	        //notifies rails one level up so they can decide if we can connect
+            if (dirMeta == 2 || dirMeta == 3 || dirMeta == 4 || dirMeta == 5){
                 world.notifyBlocksOfNeighborChange(x, y + 1, z, this);
             }
         }
     }
 
-	protected boolean isConnectedRailPowered(World world, int x, int y, int z, int meta, boolean dir, int distance, int maxDistance){
+	protected boolean isConnectedRailPowered(World world, int x, int y, int z, int metadata, boolean dir, int distance, int maxDistance){
+		// if we're trying to reach past the max propagation distance
 		if (distance >= maxDistance){
 			return false;
 		}
 		else{
-			meta = meta & 7;
+			int orientation = metadata & 7;
 			boolean powered = true;
 
-			switch (meta) {
-				case 0:
+			switch (orientation) {
+				case 0: //north-south
 					if (dir){
 						++z;
 					}
@@ -73,7 +94,7 @@ public class TestPoweredRail extends NRRailBase {
 						--z;
 					}
 					break;
-				case 1:
+				case 1: //east-west
 					if (dir){
 						--x;
 					}
@@ -82,7 +103,7 @@ public class TestPoweredRail extends NRRailBase {
 					}
 
 					break;
-				case 2:
+				case 2: //ascending to east
 					if (dir){
 						--x;
 					}
@@ -92,9 +113,9 @@ public class TestPoweredRail extends NRRailBase {
 						powered = false;
 					}
 
-					meta = 1;
+					orientation = 1;
 					break;
-				case 3:
+				case 3: // ascending to west
 					if (dir){
 						--x;
 						++y;
@@ -104,9 +125,9 @@ public class TestPoweredRail extends NRRailBase {
 						++x;
 					}
 
-					meta = 1;
+					orientation = 1;
 					break;
-				case 4:
+				case 4: // ascending to north
 					if (dir){
 						++z;
 					}
@@ -116,9 +137,9 @@ public class TestPoweredRail extends NRRailBase {
 						powered = false;
 					}
 
-					meta = 0;
+					orientation = 0;
 					break;
-				case 5:
+				case 5: // ascending to south
 					if (dir){
 						++z;
 						++y;
@@ -128,16 +149,18 @@ public class TestPoweredRail extends NRRailBase {
 						--z;
 					}
 
-					meta = 0;
+					orientation = 0;
 			}
 
-			return this.testPowered(world, x, y, z, dir, distance, maxDistance, meta) || powered && this.testPowered(world, x, y - 1, z, dir, distance, maxDistance, meta);
+			return this.testPowered(world, x, y, z, dir, distance, maxDistance, orientation) || powered && this.testPowered(world, x, y - 1, z, dir, distance, maxDistance, orientation);
 		}
 	}
 
 	protected boolean testPowerPropagation(World world, int x, int y, int z, int distance, int maxDistance, int orientation){
 		return (isConnectedRailPowered(world, x,y,z, orientation,true,distance,maxDistance) || isConnectedRailPowered(world,x,y,z,orientation,false,distance,maxDistance));
 	}
+
+
 
 	protected boolean testPowered(World world, int x, int y, int z, boolean dir, int distance, int maxDistance, int orientation){
 		Block block = world.getBlock(x, y, z);
@@ -153,31 +176,22 @@ public class TestPoweredRail extends NRRailBase {
 			if (orientation == 0 && (meta1 == 1 || meta1 == 2 || meta1 == 3)){
 				return false;
 			}
-
+			// if we're powered
 			if ((meta & 8) != 0){
-				if (world.isBlockIndirectlyGettingPowered(x, y, z) || this.isConnectedRailPowered(world, x, y, z, meta, dir, distance + 1, maxDistance)){
-					//slightly changed logic to show that the rail is indeed being powered since I can't figure how to
-					//get the minecart to check it properly at the moment.
-					this.isBeingPowered = true;
-					return true;
-				}
-				else {
-					this.isBeingPowered = false;
-				}
-
+				return world.isBlockIndirectlyGettingPowered(x, y, z) || this.isConnectedRailPowered(world, x, y, z, meta, dir, distance + 1, maxDistance);
 			}
 		}
 
 		return false;
 	}
 
-    @Override
+	@Override
     public void onMinecartPass(World world, EntityMinecart cart, int x, int y, int z) {
-        NRRailBase railBlock = (NRRailBase)world.getBlock(x, y, z);
-        int meta = railBlock.getBasicRailMetadata(world,cart, x,y,z);
+        int meta = world.getBlockMetadata(x,y,z);
         int dirMeta = meta & 7;
+		int pwrMeta = meta & 8;
         double cartSpeed = Math.sqrt(cart.motionX*cart.motionX+cart.motionZ*cart.motionZ);
-        if (this.isBeingPowered){
+        if (pwrMeta == 8){
             if (cartSpeed > 0.01D){
                 cart.motionX += cart.motionX / cartSpeed * 0.04D;
                 cart.motionZ += cart.motionZ / cartSpeed * 0.04D;

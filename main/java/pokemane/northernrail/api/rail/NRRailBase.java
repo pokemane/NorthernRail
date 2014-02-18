@@ -124,10 +124,12 @@ public abstract class NRRailBase extends BlockRailBase implements IRail{
     public void onNeighborBlockChange(World world, int x, int y, int z, Block neighborBlock) {
         if (!world.isRemote){
             int blockMetadata = world.getBlockMetadata(x,y,z);
-            int newMeta = blockMetadata;
+            int dirMeta = blockMetadata;
 
+	        //this, for some reason, removes the power flag for a powered rail.
+	        //no idea why it would do that, but there it is
             if (this.isPoweredRail){
-                newMeta = blockMetadata & 7;
+                dirMeta = blockMetadata & 7;
             }
 
             boolean flag = false;
@@ -136,19 +138,19 @@ public abstract class NRRailBase extends BlockRailBase implements IRail{
                 flag = true;
             }
 
-            if (newMeta == 2 && !World.doesBlockHaveSolidTopSurface(world,x+1,y,z)){
+            if (dirMeta == 2 && !World.doesBlockHaveSolidTopSurface(world,x+1,y,z)){
                 flag = true;
             }
 
-            if (newMeta == 3 && !World.doesBlockHaveSolidTopSurface(world,x-1,y,z)){
+            if (dirMeta == 3 && !World.doesBlockHaveSolidTopSurface(world,x-1,y,z)){
                 flag = true;
             }
 
-            if (newMeta == 4 && !World.doesBlockHaveSolidTopSurface(world,x,y,z-1)){
+            if (dirMeta == 4 && !World.doesBlockHaveSolidTopSurface(world,x,y,z-1)){
                 flag = true;
             }
 
-            if (newMeta == 5 && !World.doesBlockHaveSolidTopSurface(world,x,y,z+1)){
+            if (dirMeta == 5 && !World.doesBlockHaveSolidTopSurface(world,x,y,z+1)){
                 flag = true;
             }
 
@@ -157,7 +159,7 @@ public abstract class NRRailBase extends BlockRailBase implements IRail{
                 world.setBlockToAir(x,y,z);
             }
             else {
-                this.func_150048_a(world, x, y, z, blockMetadata, newMeta, neighborBlock);
+                this.func_150048_a(world, x, y, z, blockMetadata, dirMeta, neighborBlock);
             }
         }
     }

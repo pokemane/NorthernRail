@@ -24,4 +24,9 @@ public class NRTileEntity extends TileEntity {
         return this.worldObj;
     }
 
+
+    @Override
+    public boolean canUpdate() {
+        return false;
+    }
 }

@@ -5,6 +5,8 @@ import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.item.EntityMinecart;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
@@ -26,6 +28,17 @@ public class TestRail extends NRRailBase {
     public IIcon getIcon(int side, int meta){
         return meta >= 6 ? this.icon : this.blockIcon;
     }
+
+	@Override
+	@SideOnly(Side.CLIENT)
+	public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int p_149727_6_, float p_149727_7_, float p_149727_8_, float p_149727_9_) {
+		NRRailBase block = (NRRailBase)world.getBlock(x,y,z);
+		int meta = block.getBasicRailMetadata(world,null,x,y,z);
+		final String message = "meta: " + String.valueOf(meta);
+		ChatComponentText chatmessage = new ChatComponentText(message);
+		player.addChatComponentMessage(chatmessage);
+		return false;
+	}
 
     @SideOnly(Side.CLIENT)
     public void registerBlockIcons(IIconRegister iconRegister){
