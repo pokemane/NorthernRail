@@ -13,7 +13,7 @@ import java.util.Random;
 /**
  * Created by pokemane on 2/15/14.
  */
-public interface IRail {
+public interface IRailBase {
     /**
      * Returns true if the block at the coordinates of world passed is a valid rail block (current is rail, isPoweredRail or
      * detector).

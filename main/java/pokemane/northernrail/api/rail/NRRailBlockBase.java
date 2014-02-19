@@ -17,42 +17,36 @@ import java.util.Random;
 /**
  * Created by pokemane on 2/15/14.
  */
-public abstract class NRRailBase extends BlockRailBase implements IRail{
+public abstract class NRRailBlockBase extends BlockRailBase{
 
     protected final boolean isPoweredRail;
-    protected NRRailBase(boolean powered){
+    protected NRRailBlockBase(boolean powered){
         super(powered);
         this.isPoweredRail = powered;
         this.setBlockBounds(0.0F, 0.0F, 0.0F, 1.0F, 0.125F, 1.0F);
         this.setCreativeTab(NorthernRailLoader.creativeTabNR);
     }
 
-    @Override
     public boolean isRailBlockAt(World world, int x, int y, int z) {
         return isRailBlock(world.getBlock(x,y,z));
     }
 
-    @Override
     public int getX() {
         return 0;
     }
 
-    @Override
     public int getY() {
         return 0;
     }
 
-    @Override
     public int getZ() {
         return 0;
     }
 
-    @Override
     public World getWorld() {
         return null;
     }
 
-    @Override
     public boolean isRailBlock(Block block) {
         return block instanceof BlockRailBase;
     }
@@ -177,8 +171,14 @@ public abstract class NRRailBase extends BlockRailBase implements IRail{
 
     @Override
     public void func_150052_a(World world, int x, int y, int z, boolean par6){
+	    Block block = world.getBlock(x,y,z);
         if (!world.isRemote){
+	        if (!(block instanceof NRRailBlockBase) ){
                 new Rail(world,x,y,z).func_150655_a(world.isBlockIndirectlyGettingPowered(x, y, z), par6);
+	        }
+	        else {
+		        new NRRailLogic(world,x,y,z).func_150655_a(world.isBlockIndirectlyGettingPowered(x,y,z), par6);
+	        }
         }
     }
 
@@ -230,7 +230,6 @@ public abstract class NRRailBase extends BlockRailBase implements IRail{
         return meta;
     }
 
-    @Override
     public float getMaxRailSpeed(World world, EntityMinecart cart, int x, int y, int z) {
         return 0.4f;
     }
@@ -260,7 +259,12 @@ public abstract class NRRailBase extends BlockRailBase implements IRail{
             super(world, x, y, z);
         }
 
-        /**
+	    @Override
+	    public void func_150655_a(boolean p_150655_1_, boolean p_150655_2_) {
+		    super.func_150655_a(p_150655_1_, p_150655_2_);
+	    }
+
+	    /**
          * Wrapper because the way vanilla is structured is dumb as hell
          * @return how many rails are touching our rail
          */
