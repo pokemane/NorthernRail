@@ -3,7 +3,6 @@ package pokemane.northernrail.common.block.rail;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockRailBase;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.item.EntityMinecart;
 import net.minecraft.entity.player.EntityPlayer;
@@ -11,12 +10,12 @@ import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
-import pokemane.northernrail.api.rail.NRRailBase;
+import pokemane.northernrail.api.rail.NRRailBlockBase;
 
 /**
  * Created by pokemane on 2/16/14.
  */
-public class TestPoweredRail extends NRRailBase {
+public class TestPoweredRail extends NRRailBlockBase {
     private IIcon poweredIcon;
     private int maxPropagationDistance = 12;
     public TestPoweredRail(){
@@ -34,7 +33,9 @@ public class TestPoweredRail extends NRRailBase {
 		int meta = world.getBlockMetadata(x,y,z);
 		final String message = "meta: " + String.valueOf(meta);
 		ChatComponentText chatmessage = new ChatComponentText(message);
-		player.addChatComponentMessage(chatmessage);
+		if (world.isRemote){
+			player.addChatComponentMessage(chatmessage);
+		}
 		return false;
 	}
 

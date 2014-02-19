@@ -10,12 +10,12 @@ import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
-import pokemane.northernrail.api.rail.NRRailBase;
+import pokemane.northernrail.api.rail.NRRailBlockBase;
 
 /**
  * Created by pokemane on 2/15/14.
  */
-public class TestRail extends NRRailBase {
+public class TestRail extends NRRailBlockBase {
 
     @SideOnly(Side.CLIENT)
     private IIcon icon;
@@ -32,11 +32,13 @@ public class TestRail extends NRRailBase {
 	@Override
 	@SideOnly(Side.CLIENT)
 	public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int p_149727_6_, float p_149727_7_, float p_149727_8_, float p_149727_9_) {
-		NRRailBase block = (NRRailBase)world.getBlock(x,y,z);
+		NRRailBlockBase block = (NRRailBlockBase)world.getBlock(x,y,z);
 		int meta = block.getBasicRailMetadata(world,null,x,y,z);
 		final String message = "meta: " + String.valueOf(meta);
 		ChatComponentText chatmessage = new ChatComponentText(message);
-		player.addChatComponentMessage(chatmessage);
+		if (world.isRemote){
+			player.addChatComponentMessage(chatmessage);
+		}
 		return false;
 	}
 
@@ -55,7 +57,7 @@ public class TestRail extends NRRailBase {
 
     @Override
     public void onMinecartPass(World world, EntityMinecart cart, int x, int y, int z) {
-        NRRailBase railBlock = (NRRailBase)world.getBlock(x, y, z);
+        NRRailBlockBase railBlock = (NRRailBlockBase)world.getBlock(x, y, z);
         int meta = railBlock.getBasicRailMetadata(world,cart, x,y,z);
         int dirMeta = meta & 7;
         double cartSpeed = Math.sqrt(cart.motionX * cart.motionX + cart.motionZ * cart.motionZ);
