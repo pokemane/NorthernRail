@@ -6,8 +6,7 @@ import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.IBlockAccess;
-import pokemane.northernrail.api.rail.IRail;
-import pokemane.northernrail.api.rail.NRRailBase;
+import pokemane.northernrail.api.rail.NRRailBlockBase;
 import pokemane.northernrail.common.NorthernRail;
 
 /**
@@ -21,7 +20,7 @@ public class RenderRail implements ISimpleBlockRenderingHandler {
 
     @Override
     public boolean renderWorldBlock(IBlockAccess world, int x, int y, int z, Block block, int modelId, RenderBlocks renderer) {
-        renderRailWorld(renderer,world,x,y,z,(NRRailBase)block,modelId);
+        renderRailWorld(renderer,world,x,y,z,(NRRailBlockBase)block,modelId);
         return true;
     }
 
@@ -35,7 +34,7 @@ public class RenderRail implements ISimpleBlockRenderingHandler {
         return NorthernRail.renderIdRail;
     }
 
-    private void renderRailWorld(RenderBlocks renderBlocks, IBlockAccess iBlockAccess, int blockX, int blockY, int blockZ, NRRailBase block, int modelId){
+    private void renderRailWorld(RenderBlocks renderBlocks, IBlockAccess iBlockAccess, int blockX, int blockY, int blockZ, NRRailBlockBase block, int modelId){
         Tessellator tessellator = Tessellator.instance;
         int railMeta = iBlockAccess.getBlockMetadata(blockX,blockY,blockZ);
         IIcon railTexture = block.getIcon(0, railMeta);
