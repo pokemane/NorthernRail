@@ -12,8 +12,13 @@ import java.util.Random;
 
 /**
  * Created by pokemane on 2/15/14.
+ * The base for the Rail logic instances.
  */
-public interface IRailBase {
+
+public interface IRailBaseInstance {
+
+	public abstract IRailBaseInstance newInstance();
+
     /**
      * Returns true if the block at the coordinates of world passed is a valid rail block (current is rail, isPoweredRail or
      * detector).
