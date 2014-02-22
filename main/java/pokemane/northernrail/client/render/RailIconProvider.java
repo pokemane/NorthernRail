@@ -10,9 +10,7 @@ import pokemane.northernrail.api.rail.RailType;
  */
 public class RailIconProvider implements IRailIconProvider {
 	@Override
-	public IIcon getIconFromRailType(RailType railType) {
-		String railName = railType.getTrackTag();
-
-		return null;
+	public IIcon getIconFromRailType(IIconRegister iconRegister, RailType railType) {
+		return iconRegister.registerIcon(railType.getTrackTag());
 	}
 }

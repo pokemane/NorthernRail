@@ -2,6 +2,7 @@ package pokemane.northernrail.common.block.rail;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockRailBase;
+import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.item.EntityMinecart;
 import net.minecraft.item.Item;
@@ -13,6 +14,7 @@ import net.minecraft.util.Vec3;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import pokemane.northernrail.api.rail.IRailLogic;
+import pokemane.northernrail.api.rail.RailRegistry;
 import pokemane.northernrail.api.rail.RailType;
 import pokemane.northernrail.client.render.RailIconProvider;
 import pokemane.northernrail.common.NorthernRailLoader;
@@ -28,6 +30,8 @@ public class RailBaseNR extends BlockRailBase {
 
 	public RailType railType;
 	public TileEntityRail tileEntityRail;
+	private IIcon railIcon;
+	private IIcon railAltIcon;
 
 	public RailBaseNR() {
 		super(false);
@@ -50,8 +54,14 @@ public class RailBaseNR extends BlockRailBase {
 		return this.blockIcon;
 	}
 
+	@Override
+	public void registerBlockIcons(IIconRegister iconRegister) {
+		this.blockIcon = this.railType.getIcon(iconRegister);
+	}
+
+
 	public TileEntity createTileEntity(World world, int metadata){
-		return new TileEntityRail();
+		return new TileEntityRail(railType);
 	}
 
 	protected RailBaseNR(boolean p_i45389_1_) {
@@ -203,11 +213,6 @@ public class RailBaseNR extends BlockRailBase {
 	@Override
 	public int getMobilityFlag() {
 		return super.getMobilityFlag();
-	}
-
-	@Override
-	public void breakBlock(World p_149749_1_, int p_149749_2_, int p_149749_3_, int p_149749_4_, Block p_149749_5_, int p_149749_6_) {
-		super.breakBlock(p_149749_1_, p_149749_2_, p_149749_3_, p_149749_4_, p_149749_5_, p_149749_6_);
 	}
 
 	/**

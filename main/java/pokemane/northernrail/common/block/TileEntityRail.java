@@ -5,6 +5,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
 import pokemane.northernrail.api.rail.IRailLogic;
+import pokemane.northernrail.api.rail.RailType;
 
 /**
  * Created by pokemane on 2/20/14.
@@ -12,8 +13,11 @@ import pokemane.northernrail.api.rail.IRailLogic;
 public class TileEntityRail extends TileEntity {
 
 	public IRailLogic rail;
+	private RailType railType;
 
-	public TileEntityRail() {
+	public TileEntityRail(RailType railType) {
+		this.railType = railType;
+		this.rail = railType.createRailFromType();
 	}
 
 	public int getX(){return this.xCoord;}

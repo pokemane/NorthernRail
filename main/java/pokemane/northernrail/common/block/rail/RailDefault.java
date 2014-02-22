@@ -8,5 +8,4 @@ import pokemane.northernrail.api.rail.RailLogicBase;
  */
 public class RailDefault extends RailLogicBase {
 
-
 }
