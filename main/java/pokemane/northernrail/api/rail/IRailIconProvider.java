@@ -1,4 +1,4 @@
-package pokemane.northernrail.client.render;
+package pokemane.northernrail.api.rail;
 
 import net.minecraft.util.IIcon;
 import pokemane.northernrail.api.rail.IRailLogic;
