@@ -51,7 +51,7 @@ public abstract class RailLogicBase implements IRailLogic {
 
 	@Override
 	public void setTile(TileEntityRail tileEntityRail) {
-
+		this.tileEntity = tileEntityRail;
 	}
 
 	@Override

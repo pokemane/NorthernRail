@@ -12,6 +12,7 @@ import cpw.mods.fml.common.registry.GameRegistry;
 import net.minecraft.block.Block;
 import net.minecraft.creativetab.CreativeTabs;
 import pokemane.northernrail.common.block.TileEntityRail;
+import pokemane.northernrail.common.block.rail.RailBaseNR;
 import pokemane.northernrail.testing.TestPoweredRail;
 import pokemane.northernrail.testing.TestRail;
 import pokemane.northernrail.util.network.packet.PacketPipeline;
@@ -41,6 +42,7 @@ public class NorthernRailLoader {
 
     public static Block newRail;
     public static Block newPoweredRail;
+	public static Block railBaseNR;
 
     @EventHandler
     public void load(FMLInitializationEvent initializationEvent){
@@ -54,6 +56,8 @@ public class NorthernRailLoader {
         GameRegistry.registerBlock(newRail,"New Rail");
         newPoweredRail = (new TestPoweredRail()).setBlockName("NewPoweredRail").setBlockTextureName("rail_golden").setCreativeTab(creativeTabNR);
         GameRegistry.registerBlock(newPoweredRail, "New Powered Rail");
+	    railBaseNR = (new RailBaseNR().setBlockName("testBlock").setBlockTextureName("stone"));
+	    GameRegistry.registerBlock(railBaseNR, "TestBlock");
     }
 
     @EventHandler

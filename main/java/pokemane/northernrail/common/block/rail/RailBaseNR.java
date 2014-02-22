@@ -2,7 +2,9 @@ package pokemane.northernrail.common.block.rail;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockRailBase;
+import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.item.EntityMinecart;
+import net.minecraft.item.Item;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.IIcon;
@@ -11,9 +13,12 @@ import net.minecraft.util.Vec3;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import pokemane.northernrail.api.rail.IRailLogic;
+import pokemane.northernrail.api.rail.RailType;
+import pokemane.northernrail.client.render.RailIconProvider;
 import pokemane.northernrail.common.NorthernRailLoader;
 import pokemane.northernrail.common.block.TileEntityRail;
 
+import java.util.List;
 import java.util.Random;
 
 /**
@@ -21,7 +26,8 @@ import java.util.Random;
  */
 public class RailBaseNR extends BlockRailBase {
 
-	public IRailLogic rail;
+	public RailType railType;
+	public TileEntityRail tileEntityRail;
 
 	public RailBaseNR() {
 		super(false);
@@ -30,18 +36,18 @@ public class RailBaseNR extends BlockRailBase {
 		setHardness(1.05F);
 		setStepSound(soundTypeMetal);
 		setCreativeTab(NorthernRailLoader.creativeTabNR);
-		//todo TE and rendering things maybe
 	}
 
 	/**
 	 * Gets the block's texture. Args: side, meta
 	 *
-	 * @param p_149691_1_
-	 * @param p_149691_2_
+	 * @param side
+	 * @param meta
 	 */
 	@Override
-	public IIcon getIcon(int p_149691_1_, int p_149691_2_) {
-		return this.rail.getIcon();
+	public IIcon getIcon(int side, int meta) {
+		//return this.tileEntityRail.rail.getIcon();
+		return this.blockIcon;
 	}
 
 	public TileEntity createTileEntity(World world, int metadata){
@@ -64,14 +70,14 @@ public class RailBaseNR extends BlockRailBase {
 	 * Returns a bounding box from the pool of bounding boxes (this means this box can change after the pool has been
 	 * cleared to be reused)
 	 *
-	 * @param p_149668_1_
+	 * @param world
 	 * @param p_149668_2_
 	 * @param p_149668_3_
 	 * @param p_149668_4_
 	 */
 	@Override
-	public AxisAlignedBB getCollisionBoundingBoxFromPool(World p_149668_1_, int p_149668_2_, int p_149668_3_, int p_149668_4_) {
-		return super.getCollisionBoundingBoxFromPool(p_149668_1_, p_149668_2_, p_149668_3_, p_149668_4_);
+	public AxisAlignedBB getCollisionBoundingBoxFromPool(World world, int p_149668_2_, int p_149668_3_, int p_149668_4_) {
+		return super.getCollisionBoundingBoxFromPool(world, p_149668_2_, p_149668_3_, p_149668_4_);
 	}
 
 	/**
@@ -87,16 +93,16 @@ public class RailBaseNR extends BlockRailBase {
 	 * Ray traces through the blocks collision from start vector to end vector returning a ray trace hit. Args: world,
 	 * x, y, z, startVec, endVec
 	 *
-	 * @param p_149731_1_
-	 * @param p_149731_2_
-	 * @param p_149731_3_
-	 * @param p_149731_4_
-	 * @param p_149731_5_
-	 * @param p_149731_6_
+	 * @param world
+	 * @param x
+	 * @param y
+	 * @param z
+	 * @param param5vec3
+	 * @param param6vec3
 	 */
 	@Override
-	public MovingObjectPosition collisionRayTrace(World p_149731_1_, int p_149731_2_, int p_149731_3_, int p_149731_4_, Vec3 p_149731_5_, Vec3 p_149731_6_) {
-		return super.collisionRayTrace(p_149731_1_, p_149731_2_, p_149731_3_, p_149731_4_, p_149731_5_, p_149731_6_);
+	public MovingObjectPosition collisionRayTrace(World world, int x, int y, int z, Vec3 param5vec3, Vec3 param6vec3) {
+		return super.collisionRayTrace(world, x, y, z, param5vec3, param6vec3);
 	}
 
 	/**
@@ -154,14 +160,15 @@ public class RailBaseNR extends BlockRailBase {
 	/**
 	 * Called whenever the block is added into the world. Args: world, x, y, z
 	 *
-	 * @param p_149726_1_
-	 * @param p_149726_2_
-	 * @param p_149726_3_
-	 * @param p_149726_4_
+	 * @param world
+	 * @param x
+	 * @param y
+	 * @param z
 	 */
 	@Override
-	public void onBlockAdded(World p_149726_1_, int p_149726_2_, int p_149726_3_, int p_149726_4_) {
-		super.onBlockAdded(p_149726_1_, p_149726_2_, p_149726_3_, p_149726_4_);
+	public void onBlockAdded(World world, int x, int y, int z) {
+		super.onBlockAdded(world, x, y, z);
+		this.tileEntityRail = (TileEntityRail)world.getTileEntity(x,y,z);
 	}
 
 	/**

@@ -2,6 +2,7 @@ package pokemane.northernrail.common.block;
 
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
 import pokemane.northernrail.api.rail.IRailLogic;
 
@@ -19,6 +20,10 @@ public class TileEntityRail extends TileEntity {
 	public int getY(){return this.yCoord;}
 	public int getZ(){return this.zCoord;}
 	public World getWorld(){return this.worldObj;}
+
+	public IIcon getIcon(){
+		return null;
+	}
 
 	@Override
 	public void readFromNBT(NBTTagCompound p_145839_1_) {

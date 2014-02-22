@@ -4,7 +4,6 @@ package pokemane.northernrail.api.rail;
 import net.minecraft.block.Block;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.IIcon;
-import pokemane.northernrail.client.render.IRailIconProvider;
 
 /**
  * Created by pokemane on 2/18/14.
@@ -19,16 +18,22 @@ public final class RailType {
 	private final String tooltip;
 	private final IRailLogic railClass;
 	private final IRailIconProvider iconProvider;
+	private final int railId;
 
-	public RailType(String trackTag, IRailLogic railClass, IRailIconProvider iconProvider) {
-		this(trackTag, railClass, iconProvider, null);
+	public RailType(int railId, String trackTag, IRailLogic railClass, IRailIconProvider iconProvider) {
+		this(railId ,trackTag, railClass, iconProvider, null);
 	}
 
-	public RailType(String trackTag, IRailLogic railClass, IRailIconProvider iconProvider, String tooltip) {
+	public RailType(int railId, String trackTag, IRailLogic railClass, IRailIconProvider iconProvider, String tooltip) {
+		this.railId = railId;
 		this.railClass = railClass;
 		this.tooltip = tooltip;
 		this.trackTag = trackTag;
 		this.iconProvider = iconProvider;
+	}
+
+	public int getRailId() {
+		return railId;
 	}
 
 	public String getTrackTag() {
