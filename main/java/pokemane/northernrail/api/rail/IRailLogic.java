@@ -15,9 +15,9 @@ import java.util.Random;
  * The base for the Rail logic instances.
  */
 
-public interface IRailBaseInstance {
+public interface IRailLogic {
 
-	public abstract IRailBaseInstance newInstance();
+	public abstract IRailLogic newInstance();
 
     /**
      * Returns true if the block at the coordinates of world passed is a valid rail block (current is rail, isPoweredRail or

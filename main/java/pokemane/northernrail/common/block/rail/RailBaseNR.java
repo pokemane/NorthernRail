@@ -1,4 +1,4 @@
-package pokemane.northernrail.api.rail;
+package pokemane.northernrail.common.block.rail;
 
 import cpw.mods.fml.common.registry.GameRegistry;
 import net.minecraft.block.Block;
@@ -9,6 +9,7 @@ import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import pokemane.northernrail.api.rail.IRailBaseInstance;
 import pokemane.northernrail.common.NorthernRailLoader;
 import pokemane.northernrail.common.block.NRTileEntity;
 
