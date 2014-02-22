@@ -11,9 +11,9 @@ import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.registry.GameRegistry;
 import net.minecraft.block.Block;
 import net.minecraft.creativetab.CreativeTabs;
-import pokemane.northernrail.common.block.NRTileEntity;
-import pokemane.northernrail.common.block.rail.TestPoweredRail;
-import pokemane.northernrail.common.block.rail.TestRail;
+import pokemane.northernrail.common.block.TileEntityRail;
+import pokemane.northernrail.testing.TestPoweredRail;
+import pokemane.northernrail.testing.TestRail;
 import pokemane.northernrail.util.network.packet.PacketPipeline;
 
 
@@ -45,6 +45,7 @@ public class NorthernRailLoader {
     @EventHandler
     public void load(FMLInitializationEvent initializationEvent){
         packetPipeline.initalize();
+	    GameRegistry.registerTileEntity(TileEntityRail.class, "railTile");
     }
 
     @EventHandler

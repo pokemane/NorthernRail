@@ -3,6 +3,8 @@ package pokemane.northernrail.api.rail;
 
 import net.minecraft.block.Block;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.IIcon;
+import pokemane.northernrail.client.render.IRailIconProvider;
 
 /**
  * Created by pokemane on 2/18/14.
@@ -15,16 +17,18 @@ public final class RailType {
 	private final String trackTag;
 	//tooltips for eventually making tooltips
 	private final String tooltip;
-	private final IRailBase railClass;
+	private final IRailLogic railClass;
+	private final IRailIconProvider iconProvider;
 
-	public RailType(String trackTag, IRailBase railClass) {
-		this(trackTag, railClass, null);
+	public RailType(String trackTag, IRailLogic railClass, IRailIconProvider iconProvider) {
+		this(trackTag, railClass, iconProvider, null);
 	}
 
-	public RailType(String trackTag, IRailBase railClass, String tooltip){
+	public RailType(String trackTag, IRailLogic railClass, IRailIconProvider iconProvider, String tooltip) {
 		this.railClass = railClass;
 		this.tooltip = tooltip;
 		this.trackTag = trackTag;
+		this.iconProvider = iconProvider;
 	}
 
 	public String getTrackTag() {
@@ -35,16 +39,23 @@ public final class RailType {
 		return tooltip;
 	}
 
-	public IRailBase getRailClass() {
+	public IRailLogic getRailClass() {
 		return railClass;
 	}
 
-	public ItemStack getItem(int quantity){
+	public ItemStack getItemStack(int quantity){
 		if (railBlock != null){
 			return new ItemStack(railBlock,quantity);
 		}
 		return null;
 	}
 
+	public IRailLogic createRailFromType(){
+		return this.railClass.createInstance();
+	}
+
+	public IIcon getIcon(){
+		return iconProvider.getIconFromRailType(this);
+	}
 
 }

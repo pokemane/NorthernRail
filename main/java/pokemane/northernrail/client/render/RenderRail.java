@@ -6,7 +6,7 @@ import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.IBlockAccess;
-import pokemane.northernrail.api.rail.NRRailBlockBase;
+import pokemane.northernrail.testing.NRRailBlockBase;
 import pokemane.northernrail.common.NorthernRail;
 
 /**

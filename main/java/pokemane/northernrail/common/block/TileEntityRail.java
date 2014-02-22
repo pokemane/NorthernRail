@@ -3,14 +3,14 @@ package pokemane.northernrail.common.block;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
-import pokemane.northernrail.api.rail.IRailBaseInstance;
+import pokemane.northernrail.api.rail.IRailLogic;
 
 /**
  * Created by pokemane on 2/20/14.
  */
 public class TileEntityRail extends TileEntity {
 
-	public IRailBaseInstance rail;
+	public IRailLogic rail;
 
 	public TileEntityRail() {
 	}
