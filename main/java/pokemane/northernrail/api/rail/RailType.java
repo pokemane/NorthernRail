@@ -10,7 +10,6 @@ import net.minecraft.util.IIcon;
  * Created by pokemane on 2/18/14.
  */
 public final class RailType {
-	//Block is for when we instantiate this to create new rail textures.blocks.
 	// used to grab the itemstacks.
 	public static Block railBlock;
 	//name of the rail
@@ -56,12 +55,23 @@ public final class RailType {
 		return null;
 	}
 
+	public ItemStack getItem(){
+		return getItem(1);
+	}
+
+	public ItemStack getItem(int amount){
+		if (railBlock != null){
+			return new ItemStack(railBlock,amount, getRailId());
+		}
+		return null;
+	}
+
 	public IRailLogic createRailFromType(){
 		return this.getRailClass();
 	}
 
-	public IIcon getIcon(RailType railType){
-		return iconProvider.getIconFromRailType(railType);
+	public IIcon getIcon(){
+		return iconProvider.getIconFromRailType(this);
 	}
 
 }

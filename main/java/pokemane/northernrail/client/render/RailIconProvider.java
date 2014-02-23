@@ -14,17 +14,17 @@ import java.util.HashMap;
  */
 public class RailIconProvider implements IRailIconProvider {
 	public static final RailIconProvider INSTANCE = new RailIconProvider();
-	public final HashMap<RailType, IIcon[]> textures = new HashMap();
-	public final HashMap<RailType, IIcon> railTypeIIconHashMap = new HashMap();
+	public final HashMap<Integer, IIcon[]> textures = new HashMap();
+	public final HashMap<Integer, IIcon> railTypeIIconHashMap = new HashMap();
 
 	public void registerIcons(IIconRegister iconRegister){
 		for (RailType railType : RailRegistry.railTypeRegistry.values()){
-			this.railTypeIIconHashMap.put(railType, iconRegister.registerIcon(NorthernRail.RAIL_TEXTURE_DIRECTORY + railType.getRailTag()));
+			this.railTypeIIconHashMap.put(railType.getRailId(), iconRegister.registerIcon(NorthernRail.RAIL_TEXTURE_DIRECTORY + railType.getRailTag()));
 		}
 	}
 
 	@Override
 	public IIcon getIconFromRailType(RailType railType) {
-			return this.railTypeIIconHashMap.get(railType);
+			return this.railTypeIIconHashMap.get(railType.getRailId());
 	}
 }

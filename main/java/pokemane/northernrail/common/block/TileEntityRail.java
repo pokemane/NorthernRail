@@ -40,7 +40,7 @@ public class TileEntityRail extends TileEntity {
 	public World getWorld(){return this.worldObj;}
 
 	public IIcon getIcon(){
-		return railType.getIcon(this.railType);
+		return railType.getIcon();
 	}
 
 	@Override

@@ -11,6 +11,7 @@ import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.registry.GameRegistry;
 import net.minecraft.block.Block;
 import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
@@ -70,8 +71,8 @@ public class NorthernRailLoader {
 	    railBaseNR = (new RailBaseNR().setBlockName("testBlock").setBlockTextureName("rail_normal"));
 	    GameRegistry.registerBlock(railBaseNR, ItemBlockRail.class,"TestRailBlock");
 
-	    GameRegistry.addShapedRecipe(new ItemStack(railBaseNR,1,0),"xy","yx",'x', new ItemStack(Block.getBlockFromName("dirt")),'y',new ItemStack(Block.getBlockFromName("stone")));
-	    GameRegistry.addShapedRecipe(new ItemStack(railBaseNR,1,100),"xy","yx",'x', new ItemStack(Block.getBlockFromName("stone")),'y',new ItemStack(Block.getBlockFromName("dirt")));
+	    GameRegistry.addShapedRecipe(new ItemStack(railBaseNR,1,0),"xy","yx",'x', new ItemStack(Blocks.dirt),'y',new ItemStack(Blocks.stone));
+	    GameRegistry.addShapedRecipe(new ItemStack(railBaseNR,1,100),"xy","yx",'x', new ItemStack(Blocks.stone),'y',new ItemStack(Blocks.dirt));
     }
 
     @EventHandler

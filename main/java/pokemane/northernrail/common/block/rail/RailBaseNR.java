@@ -50,6 +50,7 @@ public class RailBaseNR extends BlockRailBase {
 		setHardness(1.05F);
 		setStepSound(soundTypeMetal);
 		setCreativeTab(NorthernRailLoader.creativeTabNR);
+		RailType.railBlock = this;
 	}
 
 	/**
@@ -64,10 +65,7 @@ public class RailBaseNR extends BlockRailBase {
 	 */
 	@Override
 	public void onBlockPlacedBy(World world, int x, int y, int z, EntityLivingBase player, ItemStack stack) {
-		RailType railType = RailRegistry.getRailType(stack.getItemDamage());
-		TileEntityRail tile = new TileEntityRail(railType);
-		world.setTileEntity(x,y,z,tile);
-		this.blockIcon = tile.getIcon();
+
 	}
 
 	/**
@@ -81,6 +79,7 @@ public class RailBaseNR extends BlockRailBase {
 	 */
 	@Override
 	public void onPostBlockPlaced(World world, int x, int y, int z, int metadata) {
+
 	}
 
 	@Override
@@ -125,7 +124,7 @@ public class RailBaseNR extends BlockRailBase {
 	@Override
 	public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int side, float p_149727_7_, float p_149727_8_, float p_149727_9_) {
 		TileEntityRail tile = (TileEntityRail)world.getTileEntity(x,y,z);
-		String message = String.valueOf(tile.getBlockMetadata());
+		String message = String.valueOf(world.getBlockMetadata(x,y,z));
 		ChatComponentText chatmessage = new ChatComponentText(message);
 		if(!world.isRemote){
 			player.addChatComponentMessage(chatmessage);

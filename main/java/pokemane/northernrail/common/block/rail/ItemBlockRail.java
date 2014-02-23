@@ -1,6 +1,7 @@
 package pokemane.northernrail.common.block.rail;
 
 import net.minecraft.block.Block;
+import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
@@ -34,8 +35,19 @@ public class ItemBlockRail extends ItemBlock {
 		if (railType == null){
 			return null;
 		}
-		return railType.getIcon(railType);
+		return railType.getIcon();
 	}
+
+	/**
+	 * Returns 0 for /terrain.png, 1 for /gui/items.png
+	 */
+	@Override
+	public int getSpriteNumber() {
+		return 0;
+	}
+
+	@Override
+	public void registerIcons(IIconRegister par1IconRegister) {	}
 
 	/**
 	 * Called whenever this item is equipped and the right mouse button is pressed. Args: itemStack, world, entityPlayer
@@ -60,34 +72,23 @@ public class ItemBlockRail extends ItemBlock {
 	}
 
 	/**
-	 * Called to actually place the block, after the location is determined
-	 * and all permission checks have been made.
+	 * Callback for item usage. If the item does something special on right clicking, he will have one of those. Return
+	 * True if something happen and false if it don't. This is for ITEMS, not BLOCKS
 	 *
-	 * @param stack    The item stack that was used to place the block. This can be changed inside the method.
-	 * @param player   The player who is placing the block. Can be null if the block is not being placed by a player.
-	 * @param world
-	 * @param x
-	 * @param y
-	 * @param z
-	 * @param side     The side the player (or machine) right-clicked on.
-	 * @param hitX
-	 * @param hitY
-	 * @param hitZ
-	 * @param metadata
+	 * @param par1ItemStack
+	 * @param par2EntityPlayer
+	 * @param par3World
+	 * @param par4
+	 * @param par5
+	 * @param par6
+	 * @param par7
+	 * @param par8
+	 * @param par9
+	 * @param par10
 	 */
 	@Override
-	public boolean placeBlockAt(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ, int metadata) {
-		if (!world.setBlock(x, y, z, railBaseNR, metadata, 3))
-		{
-			return false;
-		}
-
-		if (world.getBlock(x, y, z) == railBaseNR)
-		{
-			railBaseNR.onBlockPlacedBy(world, x, y, z, player, stack);
-			railBaseNR.onPostBlockPlaced(world, x, y, z, metadata);
-		}
-
-		return true;
+	public boolean onItemUse(ItemStack par1ItemStack, EntityPlayer par2EntityPlayer, World par3World, int par4, int par5, int par6, int par7, float par8, float par9, float par10) {
+		return super.onItemUse(par1ItemStack, par2EntityPlayer, par3World, par4, par5, par6, par7, par8, par9, par10);
 	}
+
 }
