@@ -4,13 +4,13 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockRailBase;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityMinecart;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.util.IIcon;
-import net.minecraft.util.MovingObjectPosition;
-import net.minecraft.util.Vec3;
+import net.minecraft.util.*;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import pokemane.northernrail.api.rail.IRailLogic;
@@ -28,10 +28,20 @@ import java.util.Random;
  */
 public class RailBaseNR extends BlockRailBase {
 
-	public RailType railType;
-	public TileEntityRail tileEntityRail;
-	private IIcon railIcon;
-	private IIcon railAltIcon;
+	/**
+	 * Called throughout the code as a replacement for block instanceof BlockContainer
+	 * Moving this to the Block base class allows for mods that wish to extend vanilla
+	 * blocks, and also want to have a tile entity on that block, may.
+	 * <p/>
+	 * Return true from this function to specify this block has a tile entity.
+	 *
+	 * @param metadata Metadata of the current block
+	 * @return True if block has a tile entity, false otherwise
+	 */
+	@Override
+	public boolean hasTileEntity(int metadata) {
+		return true;
+	}
 
 	public RailBaseNR() {
 		super(false);
@@ -43,25 +53,48 @@ public class RailBaseNR extends BlockRailBase {
 	}
 
 	/**
-	 * Gets the block's texture. Args: side, meta
+	 * Called when the block is placed in the world.
 	 *
-	 * @param side
-	 * @param meta
+	 * @param world
+	 * @param x
+	 * @param y
+	 * @param z
+	 * @param player
+	 * @param stack
 	 */
 	@Override
-	public IIcon getIcon(int side, int meta) {
-		//return this.tileEntityRail.rail.getIcon();
-		return this.blockIcon;
+	public void onBlockPlacedBy(World world, int x, int y, int z, EntityLivingBase player, ItemStack stack) {
+		RailType railType = RailRegistry.getRailType(stack.getItemDamage());
+		TileEntityRail tile = new TileEntityRail(railType);
+		world.setTileEntity(x,y,z,tile);
+		this.blockIcon = tile.getIcon();
+	}
+
+	/**
+	 * Called after a block is placed
+	 *
+	 * @param world
+	 * @param x
+	 * @param y
+	 * @param z
+	 * @param metadata
+	 */
+	@Override
+	public void onPostBlockPlaced(World world, int x, int y, int z, int metadata) {
+	}
+
+	@Override
+	public IIcon getIcon(IBlockAccess world, int x, int y, int z, int side) {
+		TileEntity tile = world.getTileEntity(x,y,z);
+		if (tile instanceof TileEntityRail){
+			return ((TileEntityRail) tile).getIcon();
+		}
+		return null;
 	}
 
 	@Override
 	public void registerBlockIcons(IIconRegister iconRegister) {
-		this.blockIcon = this.railType.getIcon(iconRegister);
-	}
-
-
-	public TileEntity createTileEntity(World world, int metadata){
-		return new TileEntityRail(railType);
+		RailIconProvider.INSTANCE.registerIcons(iconRegister);
 	}
 
 	protected RailBaseNR(boolean p_i45389_1_) {
@@ -74,6 +107,30 @@ public class RailBaseNR extends BlockRailBase {
 	@Override
 	public boolean isPowered() {
 		return super.isPowered();
+	}
+
+	/**
+	 * Called upon block activation (right click on the block.)
+	 *
+	 * @param world
+	 * @param x
+	 * @param y
+	 * @param z
+	 * @param player
+	 * @param side
+	 * @param p_149727_7_
+	 * @param p_149727_8_
+	 * @param p_149727_9_
+	 */
+	@Override
+	public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int side, float p_149727_7_, float p_149727_8_, float p_149727_9_) {
+		TileEntityRail tile = (TileEntityRail)world.getTileEntity(x,y,z);
+		String message = String.valueOf(tile.getBlockMetadata());
+		ChatComponentText chatmessage = new ChatComponentText(message);
+		if(!world.isRemote){
+			player.addChatComponentMessage(chatmessage);
+		}
+		return true;
 	}
 
 	/**
@@ -92,7 +149,7 @@ public class RailBaseNR extends BlockRailBase {
 
 	/**
 	 * Is this block (a) opaque and (b) a full 1m cube?  This determines whether or not to render the shared face of two
-	 * adjacent blocks and also whether the player can attach torches, redstone wire, etc to this block.
+	 * adjacent textures.blocks and also whether the player can attach torches, redstone wire, etc to this block.
 	 */
 	@Override
 	public boolean isOpaqueCube() {
@@ -100,7 +157,7 @@ public class RailBaseNR extends BlockRailBase {
 	}
 
 	/**
-	 * Ray traces through the blocks collision from start vector to end vector returning a ray trace hit. Args: world,
+	 * Ray traces through the textures.blocks collision from start vector to end vector returning a ray trace hit. Args: world,
 	 * x, y, z, startVec, endVec
 	 *
 	 * @param world
@@ -116,7 +173,7 @@ public class RailBaseNR extends BlockRailBase {
 	}
 
 	/**
-	 * Updates the blocks bounds based on its current state. Args: world, x, y, z
+	 * Updates the textures.blocks bounds based on its current state. Args: world, x, y, z
 	 *
 	 * @param p_149719_1_
 	 * @param p_149719_2_
@@ -178,7 +235,6 @@ public class RailBaseNR extends BlockRailBase {
 	@Override
 	public void onBlockAdded(World world, int x, int y, int z) {
 		super.onBlockAdded(world, x, y, z);
-		this.tileEntityRail = (TileEntityRail)world.getTileEntity(x,y,z);
 	}
 
 	/**

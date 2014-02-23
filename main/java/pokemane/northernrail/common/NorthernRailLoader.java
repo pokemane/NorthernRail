@@ -11,12 +11,17 @@ import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.registry.GameRegistry;
 import net.minecraft.block.Block;
 import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemBlock;
+import net.minecraft.item.ItemStack;
 import pokemane.northernrail.api.rail.RailRegistry;
 import pokemane.northernrail.api.rail.RailType;
 import pokemane.northernrail.client.render.RailIconProvider;
 import pokemane.northernrail.common.block.TileEntityRail;
+import pokemane.northernrail.common.block.rail.ItemBlockRail;
 import pokemane.northernrail.common.block.rail.RailBaseNR;
 import pokemane.northernrail.common.block.rail.RailDefault;
+import pokemane.northernrail.common.recipe.RailRecipe;
 import pokemane.northernrail.testing.TestPoweredRail;
 import pokemane.northernrail.testing.TestRail;
 import pokemane.northernrail.util.network.packet.PacketPipeline;
@@ -52,17 +57,21 @@ public class NorthernRailLoader {
     public void load(FMLInitializationEvent initializationEvent){
         packetPipeline.initalize();
 	    GameRegistry.registerTileEntity(TileEntityRail.class, "railTile");
-	    RailRegistry.addRailType(new RailType(0,"rail_normal", new RailDefault(), new RailIconProvider()));
     }
 
     @EventHandler
     public void preinit(FMLPreInitializationEvent preInitializationEvent){
+	    RailRegistry.addRailType(new RailType(0, "rail_normal", new RailDefault(), RailIconProvider.INSTANCE));
+	    RailRegistry.addRailType(new RailType(1, "rail_golden", new RailDefault(), RailIconProvider.INSTANCE));
         newRail = (new TestRail()).setBlockName("NewRail").setBlockTextureName("rail_normal").setCreativeTab(creativeTabNR);
         GameRegistry.registerBlock(newRail,"New Rail");
         newPoweredRail = (new TestPoweredRail()).setBlockName("NewPoweredRail").setBlockTextureName("rail_golden").setCreativeTab(creativeTabNR);
         GameRegistry.registerBlock(newPoweredRail, "New Powered Rail");
-	    railBaseNR = (new RailBaseNR().setBlockName("testBlock").setBlockTextureName("stone"));
-	    GameRegistry.registerBlock(railBaseNR, "TestBlock");
+	    railBaseNR = (new RailBaseNR().setBlockName("testBlock").setBlockTextureName("rail_normal"));
+	    GameRegistry.registerBlock(railBaseNR, ItemBlockRail.class,"TestRailBlock");
+
+	    GameRegistry.addShapedRecipe(new ItemStack(railBaseNR,1,0),"xy","yx",'x', new ItemStack(Block.getBlockFromName("dirt")),'y',new ItemStack(Block.getBlockFromName("stone")));
+	    GameRegistry.addShapedRecipe(new ItemStack(railBaseNR,1,100),"xy","yx",'x', new ItemStack(Block.getBlockFromName("stone")),'y',new ItemStack(Block.getBlockFromName("dirt")));
     }
 
     @EventHandler

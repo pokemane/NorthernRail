@@ -1,5 +1,6 @@
 package pokemane.northernrail.common.block;
 
+import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IIcon;
@@ -11,13 +12,26 @@ import pokemane.northernrail.api.rail.RailType;
  * Created by pokemane on 2/20/14.
  */
 public class TileEntityRail extends TileEntity {
-
-	public IRailLogic rail;
-	private RailType railType;
-
 	public TileEntityRail(RailType railType) {
 		this.railType = railType;
 		this.rail = railType.createRailFromType();
+		this.rail.setTile(this);
+	}
+
+	public IRailLogic rail;
+
+	private RailType railType;
+
+	public RailType getRailType() {
+		return railType;
+	}
+
+	public void setRailType(RailType railType) {
+		this.railType = railType;
+	}
+
+	public IRailLogic getRailInstance(){
+		return this.rail;
 	}
 
 	public int getX(){return this.xCoord;}
@@ -26,7 +40,7 @@ public class TileEntityRail extends TileEntity {
 	public World getWorld(){return this.worldObj;}
 
 	public IIcon getIcon(){
-		return null;
+		return railType.getIcon(this.railType);
 	}
 
 	@Override
@@ -41,7 +55,8 @@ public class TileEntityRail extends TileEntity {
 
 	@Override
 	public int getBlockMetadata() {
-		return super.getBlockMetadata();
+		this.blockMetadata = this.worldObj.getBlockMetadata(this.xCoord,this.yCoord,this.zCoord);
+		return this.blockMetadata;
 	}
 
 	/**

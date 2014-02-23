@@ -10,6 +10,8 @@ import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
+import pokemane.northernrail.api.rail.RailRegistry;
+import pokemane.northernrail.client.render.RailIconProvider;
 import pokemane.northernrail.testing.NRRailBlockBase;
 
 /**
@@ -34,9 +36,9 @@ public class TestRail extends NRRailBlockBase {
 	public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int p_149727_6_, float p_149727_7_, float p_149727_8_, float p_149727_9_) {
 		NRRailBlockBase block = (NRRailBlockBase)world.getBlock(x,y,z);
 		int meta = block.getBasicRailMetadata(world,null,x,y,z);
-		final String message = "meta: " + String.valueOf(meta);
+		String message = "RailRegistry " + String.valueOf(RailIconProvider.INSTANCE.railTypeIIconHashMap.values());
 		ChatComponentText chatmessage = new ChatComponentText(message);
-		if (world.isRemote){
+		if (!world.isRemote){
 			player.addChatComponentMessage(chatmessage);
 		}
 		return false;

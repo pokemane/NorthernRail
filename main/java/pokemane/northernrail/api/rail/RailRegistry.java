@@ -1,11 +1,5 @@
 package pokemane.northernrail.api.rail;
 
-import pokemane.northernrail.client.render.RailIconProvider;
-import pokemane.northernrail.common.block.rail.RailDefault;
-
-
-import java.util.Dictionary;
-import java.util.Enumeration;
 import java.util.Hashtable;
 
 /**
@@ -19,9 +13,7 @@ public final class RailRegistry {
 			railTypeRegistry.put(railType.getRailId(), railType);
 	}
 
-	public RailType getRailType(int key){
+	public static RailType getRailType(int key){
 		return railTypeRegistry.get(key);
 	}
-
-
 }

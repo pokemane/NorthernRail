@@ -9,5 +9,5 @@ import pokemane.northernrail.api.rail.RailType;
  * Created by pokemane on 2/21/14.
  */
 public interface IRailIconProvider {
-	public abstract IIcon getIconFromRailType(IIconRegister iconRegister,RailType railType);
+	public abstract IIcon getIconFromRailType(RailType railType);
 }
