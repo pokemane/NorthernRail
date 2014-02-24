@@ -18,8 +18,10 @@ public class RailIconProvider implements IRailIconProvider {
 	public final HashMap<Integer, IIcon> railTypeIIconHashMap = new HashMap();
 
 	public void registerIcons(IIconRegister iconRegister){
-		for (RailType railType : RailRegistry.railTypeRegistry.values()){
-			this.railTypeIIconHashMap.put(railType.getRailId(), iconRegister.registerIcon(NorthernRail.RAIL_TEXTURE_DIRECTORY + railType.getRailTag()));
+		if (railTypeIIconHashMap.isEmpty()){
+			for (RailType railType : RailRegistry.railTypeRegistry.values()){
+				this.railTypeIIconHashMap.put(railType.getRailId(), iconRegister.registerIcon(NorthernRail.RAIL_TEXTURE_DIRECTORY + railType.getRailTag()));
+			}
 		}
 	}
 

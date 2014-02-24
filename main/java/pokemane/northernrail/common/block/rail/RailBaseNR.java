@@ -53,6 +53,10 @@ public class RailBaseNR extends BlockRailBase {
 		RailType.railBlock = this;
 	}
 
+	protected RailBaseNR(boolean p_i45389_1_) {
+		super(p_i45389_1_);
+	}
+
 	/**
 	 * Called when the block is placed in the world.
 	 *
@@ -66,6 +70,24 @@ public class RailBaseNR extends BlockRailBase {
 	@Override
 	public void onBlockPlacedBy(World world, int x, int y, int z, EntityLivingBase player, ItemStack stack) {
 
+	}
+
+	/**
+	 * Called when a block is placed using its ItemBlock. Args: World, X, Y, Z, side, hitX, hitY, hitZ, block metadata
+	 *
+	 * @param world
+	 * @param x
+	 * @param y
+	 * @param z
+	 * @param side
+	 * @param p_149660_6_
+	 * @param p_149660_7_
+	 * @param p_149660_8_
+	 * @param meta
+	 */
+	@Override
+	public int onBlockPlaced(World world, int x, int y, int z, int side, float p_149660_6_, float p_149660_7_, float p_149660_8_, int meta) {
+		return super.onBlockPlaced(world, x, y, z, side, p_149660_6_, p_149660_7_, p_149660_8_, meta);
 	}
 
 	/**
@@ -96,9 +118,6 @@ public class RailBaseNR extends BlockRailBase {
 		RailIconProvider.INSTANCE.registerIcons(iconRegister);
 	}
 
-	protected RailBaseNR(boolean p_i45389_1_) {
-		super(p_i45389_1_);
-	}
 
 	/**
 	 * Returns true if the block is power related rail.

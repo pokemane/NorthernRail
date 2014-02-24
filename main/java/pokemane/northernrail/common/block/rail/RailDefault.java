@@ -1,6 +1,7 @@
 package pokemane.northernrail.common.block.rail;
 
 import net.minecraft.util.IIcon;
+import pokemane.northernrail.api.rail.IRailLogic;
 import pokemane.northernrail.api.rail.RailLogicBase;
 
 /**
@@ -8,4 +9,9 @@ import pokemane.northernrail.api.rail.RailLogicBase;
  */
 public class RailDefault extends RailLogicBase {
 
+
+	@Override
+	public IRailLogic createInstance() {
+		return new RailDefault();
+	}
 }

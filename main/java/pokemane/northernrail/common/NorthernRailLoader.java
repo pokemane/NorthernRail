@@ -64,15 +64,16 @@ public class NorthernRailLoader {
     public void preinit(FMLPreInitializationEvent preInitializationEvent){
 	    RailRegistry.addRailType(new RailType(0, "rail_normal", new RailDefault(), RailIconProvider.INSTANCE));
 	    RailRegistry.addRailType(new RailType(1, "rail_golden", new RailDefault(), RailIconProvider.INSTANCE));
+
         newRail = (new TestRail()).setBlockName("NewRail").setBlockTextureName("rail_normal").setCreativeTab(creativeTabNR);
         GameRegistry.registerBlock(newRail,"New Rail");
         newPoweredRail = (new TestPoweredRail()).setBlockName("NewPoweredRail").setBlockTextureName("rail_golden").setCreativeTab(creativeTabNR);
         GameRegistry.registerBlock(newPoweredRail, "New Powered Rail");
 	    railBaseNR = (new RailBaseNR().setBlockName("testBlock").setBlockTextureName("rail_normal"));
-	    GameRegistry.registerBlock(railBaseNR, ItemBlockRail.class,"TestRailBlock");
+	    GameRegistry.registerBlock(railBaseNR, ItemBlockRail.class, "TestRailBlock");
 
 	    GameRegistry.addShapedRecipe(new ItemStack(railBaseNR,1,0),"xy","yx",'x', new ItemStack(Blocks.dirt),'y',new ItemStack(Blocks.stone));
-	    GameRegistry.addShapedRecipe(new ItemStack(railBaseNR,1,100),"xy","yx",'x', new ItemStack(Blocks.stone),'y',new ItemStack(Blocks.dirt));
+	    GameRegistry.addShapedRecipe(new ItemStack(railBaseNR,1,1),"xy","yx",'x', new ItemStack(Blocks.stone),'y',new ItemStack(Blocks.dirt));
     }
 
     @EventHandler

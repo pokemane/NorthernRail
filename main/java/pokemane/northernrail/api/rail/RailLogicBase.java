@@ -151,6 +151,6 @@ public abstract class RailLogicBase implements IRailLogic {
 
 	@Override
 	public IRailLogic createInstance() {
-		return this;
+		return null;
 	}
 }

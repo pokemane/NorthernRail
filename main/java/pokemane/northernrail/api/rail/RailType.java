@@ -67,7 +67,7 @@ public final class RailType {
 	}
 
 	public IRailLogic createRailFromType(){
-		return this.getRailClass();
+		return this.getRailClass().createInstance();
 	}
 
 	public IIcon getIcon(){
