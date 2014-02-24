@@ -2,8 +2,10 @@ package pokemane.northernrail.common.block.rail;
 
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.texture.IIconRegister;
+import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ChatComponentText;
@@ -12,6 +14,8 @@ import net.minecraft.world.World;
 import pokemane.northernrail.api.rail.RailRegistry;
 import pokemane.northernrail.api.rail.RailType;
 import pokemane.northernrail.client.render.RailIconProvider;
+
+import java.util.List;
 
 /**
  * Created by pokemane on 2/20/14.
@@ -34,7 +38,7 @@ public class ItemBlockRail extends ItemBlock {
 	public IIcon getIconFromDamage(int damage) {
 		RailType railType = RailRegistry.getRailType(damage);
 		if (railType == null){
-			return null;
+			return RailIconProvider.INSTANCE.getIconFromRailType(0);
 		}
 		return railType.getIcon();
 	}
@@ -45,6 +49,32 @@ public class ItemBlockRail extends ItemBlock {
 	}
 
 	/**
+	 * returns a list of items with the same ID, but different meta (eg: dye returns 16 items)
+	 *
+	 * @param item
+	 * @param tab
+	 * @param list
+	 */
+	@Override
+	public void getSubItems(Item item, CreativeTabs tab, List list) {
+		for (int i = 0; i < RailRegistry.railTypeRegistry.size(); i++){
+			list.add(new ItemStack(item,1,RailRegistry.getRailType(i).getRailId()));
+		}
+	}
+
+	/**
+	 * Returns the unlocalized name of this item. This version accepts an ItemStack so different stacks can have
+	 * different names based on their damage or NBT.
+	 *
+	 * @param itemStack
+	 */
+	@Override
+	public String getUnlocalizedName(ItemStack itemStack) {
+		int damage = itemStack.getItemDamage();
+		return RailRegistry.getRailType(damage).getRailTag();
+	}
+
+	/**
 	 * Returns the metadata of the block which this Item (ItemBlock) can place
 	 *
 	 * @param metadata
@@ -52,11 +82,6 @@ public class ItemBlockRail extends ItemBlock {
 	@Override
 	public int getMetadata(int metadata) {
 		return metadata;
-	}
-
-	@Override
-	public void registerIcons(IIconRegister iconRegister) {
-		RailIconProvider.INSTANCE.registerIcons(iconRegister);
 	}
 
 	/**

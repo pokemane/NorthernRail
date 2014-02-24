@@ -66,10 +66,10 @@ public class TestPoweredRail extends NRRailBlockBase {
 		//if we're being indirectly powered and we've set the metadata
         if (flag1){
 	        //notify textures.blocks below our level we've changed
-	        //this causes other rails to connect to us if they're ascending to us
+	        //this causes other blocks to connect to us if they're ascending to us
             world.notifyBlocksOfNeighborChange(x, y - 1, z, this);
 			//if we're ascending now
-	        //notifies rails one level up so they can decide if we can connect
+	        //notifies blocks one level up so they can decide if we can connect
             if (dirMeta == 2 || dirMeta == 3 || dirMeta == 4 || dirMeta == 5){
                 world.notifyBlocksOfNeighborChange(x, y + 1, z, this);
             }

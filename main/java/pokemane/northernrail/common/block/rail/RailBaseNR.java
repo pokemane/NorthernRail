@@ -110,7 +110,7 @@ public class RailBaseNR extends BlockRailBase {
 		if (tile instanceof TileEntityRail){
 			return ((TileEntityRail) tile).getIcon();
 		}
-		return null;
+		return RailIconProvider.INSTANCE.getIconFromRailType(0);
 	}
 
 	@Override

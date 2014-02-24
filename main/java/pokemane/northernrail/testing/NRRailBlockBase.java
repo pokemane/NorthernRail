@@ -266,7 +266,7 @@ public abstract class NRRailBlockBase extends BlockRailBase{
 
 	    /**
          * Wrapper because the way vanilla is structured is dumb as hell
-         * @return how many rails are touching our rail
+         * @return how many blocks are touching our rail
          */
         public int countAdjacentRails(){
             return func_150650_a();

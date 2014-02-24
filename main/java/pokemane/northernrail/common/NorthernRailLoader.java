@@ -15,6 +15,7 @@ import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.oredict.ShapedOreRecipe;
 import pokemane.northernrail.api.rail.RailRegistry;
 import pokemane.northernrail.api.rail.RailType;
 import pokemane.northernrail.client.render.RailIconProvider;
@@ -72,8 +73,8 @@ public class NorthernRailLoader {
 	    railBaseNR = (new RailBaseNR().setBlockName("testBlock").setBlockTextureName("rail_normal"));
 	    GameRegistry.registerBlock(railBaseNR, ItemBlockRail.class, "TestRailBlock");
 
-	    GameRegistry.addShapedRecipe(new ItemStack(railBaseNR,1,0),"xy","yx",'x', new ItemStack(Blocks.dirt),'y',new ItemStack(Blocks.stone));
-	    GameRegistry.addShapedRecipe(new ItemStack(railBaseNR,1,1),"xy","yx",'x', new ItemStack(Blocks.stone),'y',new ItemStack(Blocks.dirt));
+	    GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(railBaseNR,1,0),"xy","yx",'x', new ItemStack(Blocks.dirt),'y',new ItemStack(Blocks.stone)).setMirrored(false));
+	    GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(railBaseNR,1,1),"xy","yx",'x', new ItemStack(Blocks.stone),'y',new ItemStack(Blocks.dirt)).setMirrored(false));
     }
 
     @EventHandler
