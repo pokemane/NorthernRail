@@ -146,7 +146,7 @@ public class RailBaseNR extends BlockRailBase {
 	@Override
 	public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int side, float p_149727_7_, float p_149727_8_, float p_149727_9_) {
 		TileEntityRail tile = (TileEntityRail)world.getTileEntity(x,y,z);
-		String message = String.valueOf(world.getBlockMetadata(x,y,z));
+		String message = String.valueOf(tile.getRailType());
 		ChatComponentText chatmessage = new ChatComponentText(message);
 		if(!world.isRemote){
 			player.addChatComponentMessage(chatmessage);
@@ -156,7 +156,7 @@ public class RailBaseNR extends BlockRailBase {
 
 	@Override
 	public Item getItemDropped(int p_149650_1_, Random p_149650_2_, int p_149650_3_) {
-		return new ItemBlockRail(new RailBaseNR());
+		return new ItemBlockRail(this);
 	}
 
 	/**
