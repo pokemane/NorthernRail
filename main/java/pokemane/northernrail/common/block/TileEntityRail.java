@@ -15,7 +15,7 @@ import pokemane.northernrail.core.util.RailBlockDataManager;
 public class TileEntityRail extends TileEntity {
 	public TileEntityRail(RailType railType) {
 		this.railType = railType;
-		this.logic = railType.createRailFromType();
+		this.logic = railType.createLogicFromType();
 		this.logic.setTile(this);
 	}
 

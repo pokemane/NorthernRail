@@ -20,6 +20,7 @@ import pokemane.northernrail.api.rail.RailType;
 import pokemane.northernrail.client.render.RailIconProvider;
 import pokemane.northernrail.common.NorthernRailLoader;
 import pokemane.northernrail.common.block.TileEntityRail;
+import pokemane.northernrail.core.util.BlockPosition;
 import pokemane.northernrail.core.util.RailBlockDataManager;
 
 import java.util.ArrayList;
@@ -145,8 +146,21 @@ public class RailBaseNR extends BlockRailBase {
 	 */
 	@Override
 	public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int side, float p_149727_7_, float p_149727_8_, float p_149727_9_) {
-		TileEntityRail tile = (TileEntityRail)world.getTileEntity(x,y,z);
-		String message = String.valueOf(tile.getRailType());
+		String message;
+		TileEntity tile = world.getTileEntity(x,y,z);
+		if (tile != null){
+			if (tile instanceof TileEntityRail){
+				message = "Tile Entity Rail RailType ID " + ((TileEntityRail)tile).getRailType().getRailId();
+			}
+			else {
+				message = "Tile is not instance of TER";
+			}
+
+		}
+		else {
+			message = "Tile is null";
+		}
+
 		ChatComponentText chatmessage = new ChatComponentText(message);
 		if(!world.isRemote){
 			player.addChatComponentMessage(chatmessage);
@@ -184,9 +198,14 @@ public class RailBaseNR extends BlockRailBase {
 	public void breakBlock(World world, int x, int y, int z, Block block, int metadata) {
 		//todo fill this with my own shit and push the tile entity removal till after I get my data.
 		TileEntity tile = world.getTileEntity(x,y,z);
+		RailType type = ((TileEntityRail)tile).getRailType();
 		if (tile != null) {
 			if (tile instanceof TileEntityRail) {
-				((TileEntityRail)tile).onBlockBroken();
+				RailBlockDataManager.setForBlock(new BlockPosition(x,y,z),type);
+				//((TileEntityRail)tile).onBlockBroken();
+			}
+			else {
+				RailBlockDataManager.setForBlock(new BlockPosition(x,y,z), RailRegistry.getRailType(0));
 			}
 			tile.invalidate();
 			world.removeTileEntity(x,y,z);

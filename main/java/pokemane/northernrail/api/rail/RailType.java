@@ -66,7 +66,7 @@ public final class RailType {
 		return null;
 	}
 
-	public IRailLogic createRailFromType(){
+	public IRailLogic createLogicFromType(){
 		return this.getRailClass().createInstance();
 	}
 

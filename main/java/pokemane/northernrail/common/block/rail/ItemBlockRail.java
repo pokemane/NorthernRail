@@ -178,7 +178,7 @@ public class ItemBlockRail extends ItemBlock {
 		else if (world.canPlaceEntityOnSide(this.field_150939_a, x, y, z, false, side, player, stack))
 		{
 			int metadata = this.getMetadata(stack.getItemDamage());
-			int metadata1 = this.field_150939_a.onBlockPlaced(world, x, y, z, side, par8, par9, par10, metadata);
+			int metadata1 = this.field_150939_a.onBlockPlaced(world, x, y, z, side, par8, par9, par10, 0);
 
 			if (placeBlockAt(stack, player, world, x, y, z, side, par8, par9, par10, metadata1))
 			{
@@ -188,9 +188,9 @@ public class ItemBlockRail extends ItemBlock {
 				TileEntityRail tileEntityRail = (TileEntityRail)world.getTileEntity(x,y,z);
 				int id = tileEntityRail.getRailType().getRailId();
 				if (!world.isRemote){
-					player.addChatComponentMessage(new ChatComponentText(String.valueOf(stack.getItemDamage())));
-					player.addChatComponentMessage(new ChatComponentText(String.valueOf(railType.getRailId())));
-					player.addChatComponentMessage(new ChatComponentText(String.valueOf(id)));
+					player.addChatComponentMessage(new ChatComponentText("Item Damage " + String.valueOf(stack.getItemDamage())));
+					player.addChatComponentMessage(new ChatComponentText("Rail ID "+String.valueOf(railType.getRailId())));
+					player.addChatComponentMessage(new ChatComponentText("Tile Entity ID "+String.valueOf(id)));
 				}
 				world.markBlockForUpdate(x,y,z);
 				world.playSoundEffect((double)((float)x + 0.5F), (double)((float)y + 0.5F), (double)((float)z + 0.5F), this.field_150939_a.stepSound.func_150496_b(), (this.field_150939_a.stepSound.getVolume() + 1.0F) / 2.0F, this.field_150939_a.stepSound.getPitch() * 0.8F);
