@@ -12,8 +12,6 @@ import cpw.mods.fml.common.registry.GameRegistry;
 import net.minecraft.block.Block;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.init.Blocks;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 import pokemane.northernrail.api.rail.RailRegistry;
@@ -23,10 +21,9 @@ import pokemane.northernrail.common.block.TileEntityRail;
 import pokemane.northernrail.common.block.rail.ItemBlockRail;
 import pokemane.northernrail.common.block.rail.RailBaseNR;
 import pokemane.northernrail.common.block.rail.RailDefault;
-import pokemane.northernrail.common.recipe.RailRecipe;
 import pokemane.northernrail.testing.TestPoweredRail;
 import pokemane.northernrail.testing.TestRail;
-import pokemane.northernrail.util.network.packet.PacketPipeline;
+import pokemane.northernrail.core.network.packet.PacketPipeline;
 
 
 /**
@@ -65,6 +62,7 @@ public class NorthernRailLoader {
     public void preinit(FMLPreInitializationEvent preInitializationEvent){
 	    RailRegistry.addRailType(new RailType(0, "rail_normal", new RailDefault(), RailIconProvider.INSTANCE));
 	    RailRegistry.addRailType(new RailType(1, "rail_golden", new RailDefault(), RailIconProvider.INSTANCE));
+	    RailRegistry.addRailType(new RailType(2, "rail_activator", new RailDefault(), RailIconProvider.INSTANCE));
 
         newRail = (new TestRail()).setBlockName("NewRail").setBlockTextureName("rail_normal").setCreativeTab(creativeTabNR);
         GameRegistry.registerBlock(newRail,"New Rail");

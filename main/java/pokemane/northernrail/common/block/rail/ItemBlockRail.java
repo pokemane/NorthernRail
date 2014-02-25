@@ -14,6 +14,7 @@ import net.minecraft.world.World;
 import pokemane.northernrail.api.rail.RailRegistry;
 import pokemane.northernrail.api.rail.RailType;
 import pokemane.northernrail.client.render.RailIconProvider;
+import pokemane.northernrail.common.block.TileEntityRail;
 
 import java.util.List;
 
@@ -24,7 +25,7 @@ public class ItemBlockRail extends ItemBlock {
 	RailBaseNR railBaseNR;
 	public ItemBlockRail(Block block) {
 		super(block);
-		this.railBaseNR = (RailBaseNR)block;
+		this.railBaseNR = (RailBaseNR) block;
 		setMaxDamage(0);
 		setHasSubtypes(true);
 	}
@@ -181,6 +182,17 @@ public class ItemBlockRail extends ItemBlock {
 
 			if (placeBlockAt(stack, player, world, x, y, z, side, par8, par9, par10, metadata1))
 			{
+				RailType railType = RailRegistry.getRailType(stack.getItemDamage());
+				TileEntityRail tile = new TileEntityRail(railType);
+				world.setTileEntity(x, y, z, tile);
+				TileEntityRail tileEntityRail = (TileEntityRail)world.getTileEntity(x,y,z);
+				int id = tileEntityRail.getRailType().getRailId();
+				if (!world.isRemote){
+					player.addChatComponentMessage(new ChatComponentText(String.valueOf(stack.getItemDamage())));
+					player.addChatComponentMessage(new ChatComponentText(String.valueOf(railType.getRailId())));
+					player.addChatComponentMessage(new ChatComponentText(String.valueOf(id)));
+				}
+				world.markBlockForUpdate(x,y,z);
 				world.playSoundEffect((double)((float)x + 0.5F), (double)((float)y + 0.5F), (double)((float)z + 0.5F), this.field_150939_a.stepSound.func_150496_b(), (this.field_150939_a.stepSound.getVolume() + 1.0F) / 2.0F, this.field_150939_a.stepSound.getPitch() * 0.8F);
 				--stack.stackSize;
 			}
@@ -193,4 +205,24 @@ public class ItemBlockRail extends ItemBlock {
 		}
 	}
 
+	/**
+	 * Called to actually place the block, after the location is determined
+	 * and all permission checks have been made.
+	 *
+	 * @param stack    The item stack that was used to place the block. This can be changed inside the method.
+	 * @param player   The player who is placing the block. Can be null if the block is not being placed by a player.
+	 * @param world
+	 * @param x
+	 * @param y
+	 * @param z
+	 * @param side     The side the player (or machine) right-clicked on.
+	 * @param hitX
+	 * @param hitY
+	 * @param hitZ
+	 * @param metadata
+	 */
+	@Override
+	public boolean placeBlockAt(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ, int metadata) {
+		return super.placeBlockAt(stack, player, world, x, y, z, side, hitX, hitY, hitZ, metadata);
+	}
 }

@@ -1,4 +1,4 @@
-package pokemane.northernrail.util.network.packet;
+package pokemane.northernrail.core.network.packet;
 
 import java.util.*;
 

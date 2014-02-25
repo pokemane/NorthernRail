@@ -5,6 +5,7 @@ import net.minecraft.block.BlockRailBase;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.item.EntityMinecart;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
@@ -19,7 +20,9 @@ import pokemane.northernrail.api.rail.RailType;
 import pokemane.northernrail.client.render.RailIconProvider;
 import pokemane.northernrail.common.NorthernRailLoader;
 import pokemane.northernrail.common.block.TileEntityRail;
+import pokemane.northernrail.core.util.RailBlockDataManager;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
@@ -53,8 +56,8 @@ public class RailBaseNR extends BlockRailBase {
 		RailType.railBlock = this;
 	}
 
-	protected RailBaseNR(boolean p_i45389_1_) {
-		super(p_i45389_1_);
+	protected RailBaseNR(boolean powered) {
+		super(powered);
 	}
 
 	/**
@@ -120,7 +123,7 @@ public class RailBaseNR extends BlockRailBase {
 
 
 	/**
-	 * Returns true if the block is power related rail.
+	 * Returns true if the block is power related logic.
 	 */
 	@Override
 	public boolean isPowered() {
@@ -149,6 +152,60 @@ public class RailBaseNR extends BlockRailBase {
 			player.addChatComponentMessage(chatmessage);
 		}
 		return true;
+	}
+
+	@Override
+	public Item getItemDropped(int p_149650_1_, Random p_149650_2_, int p_149650_3_) {
+		return new ItemBlockRail(new RailBaseNR());
+	}
+
+	/**
+	 * This returns a complete list of items dropped from this block.
+	 *
+	 * @param world    The current world
+	 * @param x        X Position
+	 * @param y        Y Position
+	 * @param z        Z Position
+	 * @param metadata Current metadata
+	 * @param fortune  Breakers fortune level
+	 * @return A ArrayList containing all items this block drops
+	 */
+	@Override
+	public ArrayList<ItemStack> getDrops(World world, int x, int y, int z, int metadata, int fortune) {
+		ArrayList<ItemStack> stackArray = new ArrayList<ItemStack>();
+		ItemBlockRail item = (ItemBlockRail) getItemDropped(metadata, world.rand, fortune);
+		RailType type = RailBlockDataManager.getForBlock(x,y,z);
+		int damage = type.getRailId();
+		stackArray.add(new ItemStack(item,1,damage));
+		return stackArray;
+	}
+
+	@Override
+	public void breakBlock(World world, int x, int y, int z, Block block, int metadata) {
+		//todo fill this with my own shit and push the tile entity removal till after I get my data.
+		TileEntity tile = world.getTileEntity(x,y,z);
+		if (tile != null) {
+			if (tile instanceof TileEntityRail) {
+				((TileEntityRail)tile).onBlockBroken();
+			}
+			tile.invalidate();
+			world.removeTileEntity(x,y,z);
+		}
+		super.breakBlock(world,x,y,z,world.getBlock(x,y,z),metadata);
+	}
+
+	/**
+	 * Called right before the block is destroyed by a player.  Args: world, x, y, z, metaData
+	 *
+	 * @param p_149664_1_
+	 * @param p_149664_2_
+	 * @param p_149664_3_
+	 * @param p_149664_4_
+	 * @param p_149664_5_
+	 */
+	@Override
+	public void onBlockDestroyedByPlayer(World p_149664_1_, int p_149664_2_, int p_149664_3_, int p_149664_4_, int p_149664_5_) {
+		super.onBlockDestroyedByPlayer(p_149664_1_, p_149664_2_, p_149664_3_, p_149664_4_, p_149664_5_);
 	}
 
 	/**
@@ -290,14 +347,14 @@ public class RailBaseNR extends BlockRailBase {
 	}
 
 	/**
-	 * Return true if the rail can make corners.
+	 * Return true if the logic can make corners.
 	 * Used by placement logic.
 	 *
 	 * @param world The world.
-	 * @param y     The rail Y coordinate.
-	 * @param x     The rail X coordinate.
-	 * @param z     The rail Z coordinate.
-	 * @return True if the rail can make corners.
+	 * @param y     The logic Y coordinate.
+	 * @param x     The logic X coordinate.
+	 * @param z     The logic Z coordinate.
+	 * @return True if the logic can make corners.
 	 */
 	@Override
 	public boolean isFlexibleRail(IBlockAccess world, int y, int x, int z) {
@@ -305,14 +362,14 @@ public class RailBaseNR extends BlockRailBase {
 	}
 
 	/**
-	 * Returns true if the rail can make up and down slopes.
+	 * Returns true if the logic can make up and down slopes.
 	 * Used by placement logic.
 	 *
 	 * @param world The world.
-	 * @param x     The rail X coordinate.
-	 * @param y     The rail Y coordinate.
-	 * @param z     The rail Z coordinate.
-	 * @return True if the rail can make slopes.
+	 * @param x     The logic X coordinate.
+	 * @param y     The logic Y coordinate.
+	 * @param z     The logic Z coordinate.
+	 * @return True if the logic can make slopes.
 	 */
 	@Override
 	public boolean canMakeSlopes(IBlockAccess world, int x, int y, int z) {
@@ -320,12 +377,12 @@ public class RailBaseNR extends BlockRailBase {
 	}
 
 	/**
-	 * Return the rail's metadata (without the power bit if the rail uses one).
-	 * Can be used to make the cart think the rail something other than it is,
+	 * Return the logic's metadata (without the power bit if the logic uses one).
+	 * Can be used to make the cart think the logic something other than it is,
 	 * for example when making diamond junctions or switches.
 	 * The cart parameter will often be null unless it it called from EntityMinecart.
 	 * <p/>
-	 * Valid rail metadata is defined as follows:
+	 * Valid logic metadata is defined as follows:
 	 * 0x0: flat track going North-South
 	 * 0x1: flat track going West-East
 	 * 0x2: track ascending to the East
@@ -339,9 +396,9 @@ public class RailBaseNR extends BlockRailBase {
 	 *
 	 * @param world The world.
 	 * @param cart  The cart asking for the metadata, null if it is not called by EntityMinecart.
-	 * @param x     The rail Y coordinate.
-	 * @param y     The rail X coordinate.
-	 * @param z     The rail Z coordinate.
+	 * @param x     The logic Y coordinate.
+	 * @param y     The logic X coordinate.
+	 * @param z     The logic Z coordinate.
 	 * @return The metadata.
 	 */
 	@Override
@@ -350,14 +407,14 @@ public class RailBaseNR extends BlockRailBase {
 	}
 
 	/**
-	 * Returns the max speed of the rail at the specified position.
+	 * Returns the max speed of the logic at the specified position.
 	 *
 	 * @param world The world.
-	 * @param cart  The cart on the rail, may be null.
-	 * @param y     The rail Y coordinate.
-	 * @param x     The rail X coordinate.
-	 * @param z     The rail Z coordinate.
-	 * @return The max speed of the current rail.
+	 * @param cart  The cart on the logic, may be null.
+	 * @param y     The logic Y coordinate.
+	 * @param x     The logic X coordinate.
+	 * @param z     The logic Z coordinate.
+	 * @return The max speed of the current logic.
 	 */
 	@Override
 	public float getRailMaxSpeed(World world, EntityMinecart cart, int y, int x, int z) {
@@ -365,14 +422,14 @@ public class RailBaseNR extends BlockRailBase {
 	}
 
 	/**
-	 * This function is called by any minecart that passes over this rail.
-	 * It is called once per update tick that the minecart is on the rail.
+	 * This function is called by any minecart that passes over this logic.
+	 * It is called once per update tick that the minecart is on the logic.
 	 *
 	 * @param world The world.
-	 * @param cart  The cart on the rail.
-	 * @param y     The rail X coordinate.
-	 * @param x     The rail Y coordinate.
-	 * @param z     The rail Z coordinate.
+	 * @param cart  The cart on the logic.
+	 * @param y     The logic X coordinate.
+	 * @param x     The logic Y coordinate.
+	 * @param z     The logic Z coordinate.
 	 */
 	@Override
 	public void onMinecartPass(World world, EntityMinecart cart, int y, int x, int z) {

@@ -12,7 +12,7 @@ import net.minecraft.util.IIcon;
 public final class RailType {
 	// used to grab the itemstacks.
 	public static Block railBlock;
-	//name of the rail
+	//name of the logic
 	private final String railTag;
 	//tooltips for eventually making tooltips
 	private final String tooltip;

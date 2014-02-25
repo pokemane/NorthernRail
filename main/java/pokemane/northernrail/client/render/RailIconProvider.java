@@ -19,6 +19,7 @@ public class RailIconProvider implements IRailIconProvider {
 	public void registerIcons(IIconRegister iconRegister){
 		if (railTypeIIconHashMap.isEmpty()){
 			for (RailType railType : RailRegistry.railTypeRegistry.values()){
+				//TODO remember to change this back to a variable later
 				this.railTypeIIconHashMap.put(railType.getRailId(), iconRegister.registerIcon("northernrail:" + railType.getRailTag()));
 			}
 		}

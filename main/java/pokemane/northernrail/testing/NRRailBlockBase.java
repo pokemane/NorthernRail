@@ -120,7 +120,7 @@ public abstract class NRRailBlockBase extends BlockRailBase{
             int blockMetadata = world.getBlockMetadata(x,y,z);
             int dirMeta = blockMetadata;
 
-	        //this, for some reason, removes the power flag for a powered rail.
+	        //this, for some reason, removes the power flag for a powered logic.
 	        //no idea why it would do that, but there it is
             if (this.isPoweredRail){
                 dirMeta = blockMetadata & 7;
@@ -266,7 +266,7 @@ public abstract class NRRailBlockBase extends BlockRailBase{
 
 	    /**
          * Wrapper because the way vanilla is structured is dumb as hell
-         * @return how many blocks are touching our rail
+         * @return how many blocks are touching our logic
          */
         public int countAdjacentRails(){
             return func_150650_a();

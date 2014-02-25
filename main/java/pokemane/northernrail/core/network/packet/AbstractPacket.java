@@ -1,4 +1,4 @@
-package pokemane.northernrail.util.network.packet;
+package pokemane.northernrail.core.network.packet;
 
 /**
  * Created by pokemane on 2/15/14.
