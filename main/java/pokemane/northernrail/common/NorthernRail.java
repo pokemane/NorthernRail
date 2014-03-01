@@ -34,4 +34,6 @@ public class NorthernRail {
     private static final String[] LANGUAGES_SUPPORTED = new String[] { "en_US" };
 
     public static int renderIdRail = 9;
+
+	public static String RAIL_ID_TAG = "railId";
 }

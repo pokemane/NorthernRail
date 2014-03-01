@@ -3,28 +3,27 @@ package pokemane.northernrail.common.block.rail;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockRailBase;
 import net.minecraft.client.renderer.texture.IIconRegister;
-import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.item.EntityMinecart;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.*;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
-import pokemane.northernrail.api.rail.IRailLogic;
 import pokemane.northernrail.api.rail.RailRegistry;
 import pokemane.northernrail.api.rail.RailType;
 import pokemane.northernrail.client.render.RailIconProvider;
+import pokemane.northernrail.common.NorthernRail;
 import pokemane.northernrail.common.NorthernRailLoader;
 import pokemane.northernrail.common.block.TileEntityRail;
+import pokemane.northernrail.core.util.BlockDataManager;
 import pokemane.northernrail.core.util.BlockPosition;
-import pokemane.northernrail.core.util.RailBlockDataManager;
+import pokemane.northernrail.core.util.RailFactory;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Random;
 
 /**
@@ -45,6 +44,20 @@ public class RailBaseNR extends BlockRailBase {
 	@Override
 	public boolean hasTileEntity(int metadata) {
 		return true;
+	}
+
+	/**
+	 * Called throughout the code as a replacement for ITileEntityProvider.createNewTileEntity
+	 * Return the same thing you would from that function.
+	 * This will fall back to ITileEntityProvider.createNewTileEntity(World) if this block is a ITileEntityProvider
+	 *
+	 * @param world
+	 * @param metadata The Metadata of the current block
+	 * @return A instance of a class extending TileEntity
+	 */
+	@Override
+	public TileEntity createTileEntity(World world, int metadata) {
+		return new TileEntityRail();
 	}
 
 	public RailBaseNR() {
@@ -105,7 +118,7 @@ public class RailBaseNR extends BlockRailBase {
 	 */
 	@Override
 	public void onPostBlockPlaced(World world, int x, int y, int z, int metadata) {
-
+		world.markBlockForUpdate(x,y,z);
 	}
 
 	@Override
@@ -188,24 +201,26 @@ public class RailBaseNR extends BlockRailBase {
 	public ArrayList<ItemStack> getDrops(World world, int x, int y, int z, int metadata, int fortune) {
 		ArrayList<ItemStack> stackArray = new ArrayList<ItemStack>();
 		ItemBlockRail item = (ItemBlockRail) getItemDropped(metadata, world.rand, fortune);
-		RailType type = RailBlockDataManager.getForBlock(x,y,z);
-		int damage = type.getRailId();
+		NBTTagCompound tag = BlockDataManager.getForBlock(x, y, z);
+		int damage = tag.getShort(NorthernRail.RAIL_ID_TAG);
 		stackArray.add(new ItemStack(item,1,damage));
 		return stackArray;
 	}
 
 	@Override
 	public void breakBlock(World world, int x, int y, int z, Block block, int metadata) {
-		//todo fill this with my own shit and push the tile entity removal till after I get my data.
-		TileEntity tile = world.getTileEntity(x,y,z);
-		RailType type = ((TileEntityRail)tile).getRailType();
+		TileEntity tile = world.getTileEntity(x, y, z);
+		NBTTagCompound tag = new NBTTagCompound();
+		short id = ((TileEntityRail)tile).getRailId();
 		if (tile != null) {
 			if (tile instanceof TileEntityRail) {
-				RailBlockDataManager.setForBlock(new BlockPosition(x,y,z),type);
-				//((TileEntityRail)tile).onBlockBroken();
+				tag.setShort(NorthernRail.RAIL_ID_TAG, id);
+				BlockDataManager.setForBlock(new BlockPosition(x, y, z), RailFactory.createRailItemStack(id).writeToNBT(tag));
+				((TileEntityRail)tile).onBlockBroken();
 			}
 			else {
-				RailBlockDataManager.setForBlock(new BlockPosition(x,y,z), RailRegistry.getRailType(0));
+				tag.setShort(NorthernRail.RAIL_ID_TAG, (short)0);
+				BlockDataManager.setForBlock(new BlockPosition(x, y, z), RailFactory.createRailItemStack((short)0).writeToNBT(tag));
 			}
 			tile.invalidate();
 			world.removeTileEntity(x,y,z);

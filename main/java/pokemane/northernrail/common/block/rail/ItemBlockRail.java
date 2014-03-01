@@ -8,13 +8,17 @@ import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
 import pokemane.northernrail.api.rail.RailRegistry;
 import pokemane.northernrail.api.rail.RailType;
 import pokemane.northernrail.client.render.RailIconProvider;
+import pokemane.northernrail.common.NorthernRail;
 import pokemane.northernrail.common.block.TileEntityRail;
+import pokemane.northernrail.core.util.BlockDataManager;
+import pokemane.northernrail.core.util.BlockPosition;
 
 import java.util.List;
 
@@ -182,17 +186,9 @@ public class ItemBlockRail extends ItemBlock {
 
 			if (placeBlockAt(stack, player, world, x, y, z, side, par8, par9, par10, metadata1))
 			{
-				RailType railType = RailRegistry.getRailType(stack.getItemDamage());
-				TileEntityRail tile = new TileEntityRail(railType);
-				world.setTileEntity(x, y, z, tile);
-				TileEntityRail tileEntityRail = (TileEntityRail)world.getTileEntity(x,y,z);
-				int id = tileEntityRail.getRailType().getRailId();
-				if (!world.isRemote){
-					player.addChatComponentMessage(new ChatComponentText("Item Damage " + String.valueOf(stack.getItemDamage())));
-					player.addChatComponentMessage(new ChatComponentText("Rail ID "+String.valueOf(railType.getRailId())));
-					player.addChatComponentMessage(new ChatComponentText("Tile Entity ID "+String.valueOf(id)));
-				}
-				world.markBlockForUpdate(x,y,z);
+				NBTTagCompound tag = new NBTTagCompound();
+				tag.setShort(NorthernRail.RAIL_ID_TAG,(short)stack.getItemDamage());
+				BlockDataManager.setForBlock(new BlockPosition(x,y,z),tag);
 				world.playSoundEffect((double)((float)x + 0.5F), (double)((float)y + 0.5F), (double)((float)z + 0.5F), this.field_150939_a.stepSound.func_150496_b(), (this.field_150939_a.stepSound.getVolume() + 1.0F) / 2.0F, this.field_150939_a.stepSound.getPitch() * 0.8F);
 				--stack.stackSize;
 			}
