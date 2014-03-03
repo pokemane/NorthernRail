@@ -27,8 +27,6 @@ public interface IRailLogic {
     public abstract int getZ();
     public abstract World getWorld();
 
-	public abstract IIcon getIcon();
-
 	public abstract void setTile(TileEntityRail tileEntityRail);
 
 	public abstract TileEntity getTile();
@@ -41,7 +39,7 @@ public interface IRailLogic {
 
 	public abstract void onMinecartPass(EntityMinecart entityMinecart);
 
-	public abstract int getBasicRailMetadata(EntityMinecart entityMinecart);
+	public abstract int getBasicRailMetadata(IBlockAccess world, EntityMinecart cart, int x, int y, int z);
 
 	public abstract void onBlockPlaced();
 
@@ -49,9 +47,9 @@ public interface IRailLogic {
 
 	public abstract void onBlockPlacedBy();
 
-	public abstract void onBlockActivated(EntityPlayer entityPlayer);
+	public abstract boolean onBlockActivated(EntityPlayer entityPlayer);
 
-	public abstract void onNeighborBlockChange();
+	public abstract void onNeighborBlockChange(World world, int x, int y, int z, Block neighborBlock);
 
 	public abstract boolean canUpdate();
 
@@ -59,16 +57,10 @@ public interface IRailLogic {
 
 	public abstract boolean canMakeSlopes();
 
-	public abstract float getMaxRailSpeed();
+	public abstract float getMaxRailSpeed(EntityMinecart cart);
 
 	public abstract void updateEntity();
 
-	public abstract void setRenderType();
-
-	public abstract int getRenderType();
-
-	public abstract RailType getRailType();
-
-	public abstract IRailLogic createInstance();
+	public abstract void onRedstoneSignal(World world, int x, int y, int z, int side, int meta, Block block);
 
 }

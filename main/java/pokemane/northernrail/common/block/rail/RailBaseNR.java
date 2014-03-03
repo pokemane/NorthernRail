@@ -141,7 +141,7 @@ public class RailBaseNR extends BlockRailBase {
 	 */
 	@Override
 	public boolean isPowered() {
-		return super.isPowered();
+		return false;
 	}
 
 	/**
@@ -159,26 +159,11 @@ public class RailBaseNR extends BlockRailBase {
 	 */
 	@Override
 	public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int side, float p_149727_7_, float p_149727_8_, float p_149727_9_) {
-		String message;
 		TileEntity tile = world.getTileEntity(x,y,z);
-		if (tile != null){
-			if (tile instanceof TileEntityRail){
-				message = "Tile Entity Rail RailType ID " + ((TileEntityRail)tile).getRailId();
-			}
-			else {
-				message = "Tile is not instance of TER";
-			}
-
+		if (tile instanceof TileEntityRail){
+			return ((TileEntityRail) tile).getRailType().getRailClass().onBlockActivated(player);
 		}
-		else {
-			message = "Tile is null";
-		}
-
-		ChatComponentText chatmessage = new ChatComponentText(message);
-		if(!world.isRemote){
-			player.addChatComponentMessage(chatmessage);
-		}
-		return true;
+		return false;
 	}
 
 	/**
@@ -296,7 +281,7 @@ public class RailBaseNR extends BlockRailBase {
 	 */
 	@Override
 	public int getRenderType() {
-		return super.getRenderType();
+		return NorthernRail.renderIdRail;
 	}
 
 	/**
@@ -381,7 +366,11 @@ public class RailBaseNR extends BlockRailBase {
 	 */
 	@Override
 	public boolean isFlexibleRail(IBlockAccess world, int y, int x, int z) {
-		return super.isFlexibleRail(world, y, x, z);
+		TileEntity tile = world.getTileEntity(x,y,z);
+		if (tile instanceof TileEntityRail){
+			return ((TileEntityRail) tile).getRailType().getRailClass().isFlexibleRail();
+		}
+		return false;
 	}
 
 	/**
@@ -396,7 +385,11 @@ public class RailBaseNR extends BlockRailBase {
 	 */
 	@Override
 	public boolean canMakeSlopes(IBlockAccess world, int x, int y, int z) {
-		return super.canMakeSlopes(world, x, y, z);
+		TileEntity tile = world.getTileEntity(x,y,z);
+		if (tile instanceof TileEntityRail){
+			return ((TileEntityRail) tile).getRailType().getRailClass().canMakeSlopes();
+		}
+		return true;
 	}
 
 	/**
@@ -426,7 +419,11 @@ public class RailBaseNR extends BlockRailBase {
 	 */
 	@Override
 	public int getBasicRailMetadata(IBlockAccess world, EntityMinecart cart, int x, int y, int z) {
-		return super.getBasicRailMetadata(world, cart, x, y, z);
+		TileEntity tile = world.getTileEntity(x,y,z);
+		if (tile instanceof TileEntityRail) {
+			return ((TileEntityRail) tile).getRailType().getRailClass().getBasicRailMetadata(world,cart,x,y,z);
+		}
+		return 0;
 	}
 
 	/**
@@ -441,7 +438,11 @@ public class RailBaseNR extends BlockRailBase {
 	 */
 	@Override
 	public float getRailMaxSpeed(World world, EntityMinecart cart, int y, int x, int z) {
-		return super.getRailMaxSpeed(world, cart, y, x, z);
+		TileEntity tile = world.getTileEntity(x,y,z);
+		if (tile instanceof TileEntityRail) {
+			return ((TileEntityRail) tile).getRailType().getRailClass().getMaxRailSpeed(cart);
+		}
+		return 0.4f;
 	}
 
 	/**

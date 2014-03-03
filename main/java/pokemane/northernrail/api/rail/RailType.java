@@ -1,5 +1,11 @@
 package pokemane.northernrail.api.rail;
 
+import net.minecraft.client.renderer.texture.IIconRegister;
+import net.minecraft.util.IIcon;
+
+import javax.imageio.metadata.IIOMetadataController;
+import java.util.HashMap;
+
 /**
  * Created by pokemane on 2/18/14.
  */
@@ -10,6 +16,8 @@ public final class RailType {
 	private final String tooltip;
 	private final IRailLogic railClass;
 	private final short railId;
+
+	private HashMap<Integer, IIcon[]> iconHashMap = new HashMap<Integer, IIcon[]>();
 
 	public RailType(short railId, String railTag, IRailLogic railClass) {
 		this(railId ,railTag, railClass, null);
@@ -38,8 +46,12 @@ public final class RailType {
 		return railClass;
 	}
 
-	public IRailLogic createLogicFromType(){
-		return this.getRailClass().createInstance();
+	public IIcon getIcon(int state, int damage, boolean powered) {
+		return null;
+	}
+
+	public void registerIcons(IIconRegister iconRegister) {
+
 	}
 
 }
