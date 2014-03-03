@@ -195,19 +195,11 @@ public class RailBaseNR extends BlockRailBase {
 	@Override
 	public ArrayList<ItemStack> getDrops(World world, int x, int y, int z, int metadata, int fortune) {
 		ArrayList<ItemStack> stackArray = new ArrayList<ItemStack>();
-		TileEntity tile = world.getTileEntity(x,y,z);
 		Item item = getItemDropped(metadata, world.rand, fortune);
 		if (!world.isRemote) {
-			if (tile != null) {
-				short railId = ((TileEntityRail)tile).getRailId();
-				stackArray.add(new ItemStack(item,1,railId));
-			}
-			else {
-				NBTTagCompound tag = BlockDataManager.getForBlock(x, y, z);
-				System.out.println("getDrops "+tag);
-				int damage = tag.getShort(NorthernRail.RAIL_ID_TAG);
-				stackArray.add(new ItemStack(item,1,damage));
-			}
+			NBTTagCompound tag = BlockDataManager.getForBlock(x, y, z);
+			int damage = tag.getShort(NorthernRail.RAIL_ID_TAG);
+			stackArray.add(new ItemStack(item,1,damage));
 		}
 		return stackArray;
 	}

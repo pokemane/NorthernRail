@@ -42,9 +42,7 @@ public class ItemBlockRail extends ItemBlock {
 	}
 
 	@Override
-	public void registerIcons(IIconRegister iconRegister) {
-		RailIconProvider.INSTANCE.registerIcons(iconRegister);
-	}
+	public void registerIcons(IIconRegister iconRegister) {	}
 
 	@Override
 	public boolean isDamageable() {
