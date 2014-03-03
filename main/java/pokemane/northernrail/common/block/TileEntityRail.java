@@ -1,23 +1,20 @@
 package pokemane.northernrail.common.block;
 
-import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
 import pokemane.northernrail.api.rail.RailRegistry;
 import pokemane.northernrail.api.rail.RailType;
 import pokemane.northernrail.common.NorthernRail;
-import pokemane.northernrail.common.block.rail.RailBaseNR;
 import pokemane.northernrail.core.util.BlockDataManager;
 import pokemane.northernrail.core.util.BlockPosition;
-import pokemane.northernrail.core.util.RailFactory;
 
 /**
  * Created by pokemane on 2/20/14.
  */
 public class TileEntityRail extends TileEntity {
 	public TileEntityRail() {
+		super();
 	}
 
 	public short getRailId() {
@@ -31,25 +28,30 @@ public class TileEntityRail extends TileEntity {
 	public int getZ(){return this.zCoord;}
 	public World getWorld(){return this.worldObj;}
 
-	public IIcon getIcon(){
-		RailType railType = RailRegistry.getRailType(railId);
-		return railType.getIcon();
-	}
-
 	@Override
 	public void readFromNBT(NBTTagCompound tag) {
 		super.readFromNBT(tag);
-		this.railId = tag.getShort(NorthernRail.RAIL_ID_TAG);
+		System.out.println(tag);
+		readItemData(tag);
 	}
 
-	public RailType getRailType(){
-		return RailRegistry.getRailType(railId);
+	public void readItemData(NBTTagCompound tag) {
+		this.railId = tag.getShort(NorthernRail.RAIL_ID_TAG);
 	}
 
 	@Override
 	public void writeToNBT(NBTTagCompound tag) {
 		super.writeToNBT(tag);
+		System.out.println(tag);
+		writeItemData(tag);
+	}
+
+	public void writeItemData(NBTTagCompound tag) {
 		tag.setShort(NorthernRail.RAIL_ID_TAG, railId);
+	}
+
+	public RailType getRailType(){
+		return RailRegistry.getRailType(railId);
 	}
 
 	@Override
@@ -70,7 +72,8 @@ public class TileEntityRail extends TileEntity {
 
 	public void onBlockBroken() {
 		NBTTagCompound tag = new NBTTagCompound();
-		tag.setShort(NorthernRail.RAIL_ID_TAG, railId);
-		BlockDataManager.setForBlock(new BlockPosition(xCoord, yCoord, zCoord), RailFactory.createRailItemStack(railId).writeToNBT(new NBTTagCompound()));
+		writeItemData(tag);
+		System.out.println("onBlockBroken "+tag);
+		BlockDataManager.setForBlock(new BlockPosition(xCoord, yCoord, zCoord), tag);
 	}
 }

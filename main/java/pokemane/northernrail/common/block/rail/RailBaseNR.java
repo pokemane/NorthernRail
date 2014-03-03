@@ -13,6 +13,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.*;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import org.lwjgl.Sys;
 import pokemane.northernrail.api.rail.RailRegistry;
 import pokemane.northernrail.api.rail.RailType;
 import pokemane.northernrail.client.render.RailIconProvider;
@@ -67,7 +68,6 @@ public class RailBaseNR extends BlockRailBase {
 		setHardness(1.05F);
 		setStepSound(soundTypeMetal);
 		setCreativeTab(NorthernRailLoader.creativeTabNR);
-		RailType.railBlock = this;
 	}
 
 	protected RailBaseNR(boolean powered) {
@@ -86,7 +86,14 @@ public class RailBaseNR extends BlockRailBase {
 	 */
 	@Override
 	public void onBlockPlacedBy(World world, int x, int y, int z, EntityLivingBase player, ItemStack stack) {
-
+		TileEntity tile = world.getTileEntity(x,y,z);
+		short damage = (short)stack.getItemDamage();
+		System.out.println(damage);
+		NBTTagCompound tag = new NBTTagCompound();
+		tag.setShort(NorthernRail.RAIL_ID_TAG, damage);
+		((TileEntityRail)tile).readItemData(tag);
+		System.out.println(tag);
+		world.markBlockForUpdate(x,y,z);
 	}
 
 	/**
@@ -125,9 +132,10 @@ public class RailBaseNR extends BlockRailBase {
 	public IIcon getIcon(IBlockAccess world, int x, int y, int z, int side) {
 		TileEntity tile = world.getTileEntity(x,y,z);
 		if (tile instanceof TileEntityRail){
-			return ((TileEntityRail) tile).getIcon();
+			short id = ((TileEntityRail) tile).getRailId();
+			return RailIconProvider.INSTANCE.getIconFromRailId(id);
 		}
-		return RailIconProvider.INSTANCE.getIconFromRailType(0);
+		return RailIconProvider.INSTANCE.getIconFromRailId((short)0);
 	}
 
 	@Override
@@ -163,7 +171,7 @@ public class RailBaseNR extends BlockRailBase {
 		TileEntity tile = world.getTileEntity(x,y,z);
 		if (tile != null){
 			if (tile instanceof TileEntityRail){
-				message = "Tile Entity Rail RailType ID " + ((TileEntityRail)tile).getRailType().getRailId();
+				message = "Tile Entity Rail RailType ID " + ((TileEntityRail)tile).getRailId();
 			}
 			else {
 				message = "Tile is not instance of TER";
@@ -181,11 +189,6 @@ public class RailBaseNR extends BlockRailBase {
 		return true;
 	}
 
-	@Override
-	public Item getItemDropped(int p_149650_1_, Random p_149650_2_, int p_149650_3_) {
-		return new ItemBlockRail(this);
-	}
-
 	/**
 	 * This returns a complete list of items dropped from this block.
 	 *
@@ -200,30 +203,32 @@ public class RailBaseNR extends BlockRailBase {
 	@Override
 	public ArrayList<ItemStack> getDrops(World world, int x, int y, int z, int metadata, int fortune) {
 		ArrayList<ItemStack> stackArray = new ArrayList<ItemStack>();
-		ItemBlockRail item = (ItemBlockRail) getItemDropped(metadata, world.rand, fortune);
-		NBTTagCompound tag = BlockDataManager.getForBlock(x, y, z);
-		int damage = tag.getShort(NorthernRail.RAIL_ID_TAG);
-		stackArray.add(new ItemStack(item,1,damage));
+		TileEntity tile = world.getTileEntity(x,y,z);
+		Item item = getItemDropped(metadata, world.rand, fortune);
+		if (!world.isRemote) {
+			if (tile != null) {
+				short railId = ((TileEntityRail)tile).getRailId();
+				stackArray.add(new ItemStack(item,1,railId));
+			}
+			else {
+				NBTTagCompound tag = BlockDataManager.getForBlock(x, y, z);
+				System.out.println("getDrops "+tag);
+				int damage = tag.getShort(NorthernRail.RAIL_ID_TAG);
+				stackArray.add(new ItemStack(item,1,damage));
+			}
+		}
 		return stackArray;
 	}
 
 	@Override
 	public void breakBlock(World world, int x, int y, int z, Block block, int metadata) {
 		TileEntity tile = world.getTileEntity(x, y, z);
-		NBTTagCompound tag = new NBTTagCompound();
-		short id = ((TileEntityRail)tile).getRailId();
-		if (tile != null) {
-			if (tile instanceof TileEntityRail) {
-				tag.setShort(NorthernRail.RAIL_ID_TAG, id);
-				BlockDataManager.setForBlock(new BlockPosition(x, y, z), RailFactory.createRailItemStack(id).writeToNBT(tag));
-				((TileEntityRail)tile).onBlockBroken();
+		if (tile != null){
+			if (tile instanceof TileEntityRail){
+				((TileEntityRail) tile).onBlockBroken();
+				tile.invalidate();
+				world.removeTileEntity(x,y,z);
 			}
-			else {
-				tag.setShort(NorthernRail.RAIL_ID_TAG, (short)0);
-				BlockDataManager.setForBlock(new BlockPosition(x, y, z), RailFactory.createRailItemStack((short)0).writeToNBT(tag));
-			}
-			tile.invalidate();
-			world.removeTileEntity(x,y,z);
 		}
 		super.breakBlock(world,x,y,z,world.getBlock(x,y,z),metadata);
 	}

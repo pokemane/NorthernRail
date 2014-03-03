@@ -10,4 +10,5 @@ import pokemane.northernrail.api.rail.RailType;
  */
 public interface IRailIconProvider {
 	public abstract IIcon getIconFromRailType(RailType railType);
+	public abstract IIcon getIconFromRailId(short id);
 }

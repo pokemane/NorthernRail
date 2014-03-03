@@ -21,9 +21,9 @@ import pokemane.northernrail.common.block.TileEntityRail;
 import pokemane.northernrail.common.block.rail.ItemBlockRail;
 import pokemane.northernrail.common.block.rail.RailBaseNR;
 import pokemane.northernrail.common.block.rail.RailDefault;
+import pokemane.northernrail.core.network.packet.PacketPipeline;
 import pokemane.northernrail.testing.TestPoweredRail;
 import pokemane.northernrail.testing.TestRail;
-import pokemane.northernrail.core.network.packet.PacketPipeline;
 
 
 /**
@@ -60,10 +60,10 @@ public class NorthernRailLoader {
 
     @EventHandler
     public void preinit(FMLPreInitializationEvent preInitializationEvent){
-	    RailRegistry.addRailType(new RailType(0, "rail_normal", new RailDefault(), RailIconProvider.INSTANCE));
-	    RailRegistry.addRailType(new RailType(1, "rail_golden", new RailDefault(), RailIconProvider.INSTANCE));
-	    RailRegistry.addRailType(new RailType(2, "rail_activator", new RailDefault(), RailIconProvider.INSTANCE));
-
+	    RailRegistry.addRailType(new RailType(RailRegistry.getNextAvailableRailId(), "rail_normal", new RailDefault(), RailIconProvider.INSTANCE));
+	    RailRegistry.addRailType(new RailType(RailRegistry.getNextAvailableRailId(), "rail_golden", new RailDefault(), RailIconProvider.INSTANCE));
+	    RailRegistry.addRailType(new RailType(RailRegistry.getNextAvailableRailId(), "rail_activator", new RailDefault(), RailIconProvider.INSTANCE));
+		//todo get these specific instances saved to my mod class for later reference.
         newRail = (new TestRail()).setBlockName("NewRail").setBlockTextureName("rail_normal").setCreativeTab(creativeTabNR);
         GameRegistry.registerBlock(newRail,"New Rail");
         newPoweredRail = (new TestPoweredRail()).setBlockName("NewPoweredRail").setBlockTextureName("rail_golden").setCreativeTab(creativeTabNR);

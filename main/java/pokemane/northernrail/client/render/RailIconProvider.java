@@ -7,6 +7,7 @@ import pokemane.northernrail.api.rail.RailRegistry;
 import pokemane.northernrail.api.rail.RailType;
 import pokemane.northernrail.common.NorthernRail;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
@@ -14,23 +15,32 @@ import java.util.HashMap;
  */
 public class RailIconProvider implements IRailIconProvider {
 	public static final RailIconProvider INSTANCE = new RailIconProvider();
-	public final HashMap<Integer, IIcon> railTypeIIconHashMap = new HashMap();
+	private static final HashMap<Short, IIcon> railTypeIIconHashMap = new HashMap();
 
 	public void registerIcons(IIconRegister iconRegister){
 		if (railTypeIIconHashMap.isEmpty()){
 			for (RailType railType : RailRegistry.railTypeRegistry.values()){
 				//TODO remember to change the string back to a variable later after I figure out how the fuck to do this right
-				this.railTypeIIconHashMap.put(railType.getRailId(), iconRegister.registerIcon("northernrail:" + railType.getRailTag()));
+				railTypeIIconHashMap.put(railType.getRailId(), iconRegister.registerIcon("northernrail:" + railType.getRailTag()));
 			}
 		}
 	}
 
 	@Override
-	public IIcon getIconFromRailType(RailType railType) {
-			return this.getIconFromRailType(railType.getRailId());
+	public IIcon getIconFromRailId(short id) {
+		return railTypeIIconHashMap.get(id);
 	}
 
-	public IIcon getIconFromRailType(int id) {
-		return this.railTypeIIconHashMap.get(id);
+	@Override
+	public IIcon getIconFromRailType(RailType railType) {
+			return this.getIconFromRailId(railType.getRailId());
+	}
+
+	public ArrayList<IIcon> getRegistryListing() {
+		ArrayList<IIcon> list = new ArrayList<IIcon>();
+		for (short i = 0; i <= railTypeIIconHashMap.size(); i++) {
+			list.add(railTypeIIconHashMap.get(i));
+		}
+		return list;
 	}
 }

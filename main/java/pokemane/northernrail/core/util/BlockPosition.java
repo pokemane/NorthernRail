@@ -123,4 +123,21 @@ public class BlockPosition {
 	public TileEntity getTileEntity(World world) {
 		return world.getTileEntity(x,y,z);
 	}
+
+	@Override
+	public boolean equals(Object obj)
+	{
+		if(!(obj instanceof BlockPosition))
+		{
+			return false;
+		}
+		BlockPosition bp = (BlockPosition)obj;
+		return bp.x == x && bp.y == y && bp.z == z && bp.orientation == orientation;
+	}
+
+	@Override
+	public int hashCode()
+	{
+		return (x & 0xFFF) | (y & 0xFF << 8) | (z & 0xFFF << 12);
+	}
 }
