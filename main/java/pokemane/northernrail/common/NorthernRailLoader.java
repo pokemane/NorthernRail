@@ -46,9 +46,7 @@ public class NorthernRailLoader {
 
     public static final PacketPipeline packetPipeline = new PacketPipeline();
 
-    public static CreativeTabs creativeTabNR = new CreativeTabNR(CreativeTabs.getNextID(),NorthernRail.MODNAME);
-
-    public static Block newRail;
+   public static Block newRail;
     public static Block newPoweredRail;
 	public static Block railBaseNR;
 
@@ -60,16 +58,16 @@ public class NorthernRailLoader {
 
     @EventHandler
     public void preinit(FMLPreInitializationEvent preInitializationEvent){
-	    RailRegistry.addRailType(new RailType(RailRegistry.getNextAvailableRailId(), "rail_normal", new RailDefault(), RailIconProvider.INSTANCE));
-	    RailRegistry.addRailType(new RailType(RailRegistry.getNextAvailableRailId(), "rail_golden", new RailDefault(), RailIconProvider.INSTANCE));
-	    RailRegistry.addRailType(new RailType(RailRegistry.getNextAvailableRailId(), "rail_activator", new RailDefault(), RailIconProvider.INSTANCE));
+	    RailRegistry.addRailType(new RailType(RailRegistry.getNextAvailableRailId(), "rail_normal", new RailDefault()));
+	    RailRegistry.addRailType(new RailType(RailRegistry.getNextAvailableRailId(), "rail_golden", new RailDefault()));
+	    RailRegistry.addRailType(new RailType(RailRegistry.getNextAvailableRailId(), "rail_activator", new RailDefault()));
 		//todo get these specific instances saved to my mod class for later reference.
-        newRail = (new TestRail()).setBlockName("NewRail").setBlockTextureName("rail_normal").setCreativeTab(creativeTabNR);
+        newRail = (new TestRail()).setBlockName("NewRail").setBlockTextureName("rail_normal");
         GameRegistry.registerBlock(newRail,"New Rail");
-        newPoweredRail = (new TestPoweredRail()).setBlockName("NewPoweredRail").setBlockTextureName("rail_golden").setCreativeTab(creativeTabNR);
+        newPoweredRail = (new TestPoweredRail()).setBlockName("NewPoweredRail").setBlockTextureName("rail_golden");
         GameRegistry.registerBlock(newPoweredRail, "New Powered Rail");
-	    railBaseNR = (new RailBaseNR().setBlockName("testBlock").setBlockTextureName("rail_normal"));
-	    GameRegistry.registerBlock(railBaseNR, ItemBlockRail.class, "TestRailBlock");
+	    railBaseNR = (new RailBaseNR().setBlockName("RailBaseNR"));
+	    GameRegistry.registerBlock(railBaseNR, ItemBlockRail.class, "RailBaseNR");
 
 	    GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(railBaseNR,1,0),"xy","yx",'x', new ItemStack(Blocks.dirt),'y',new ItemStack(Blocks.stone)).setMirrored(false));
 	    GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(railBaseNR,1,1),"xy","yx",'x', new ItemStack(Blocks.stone),'y',new ItemStack(Blocks.dirt)).setMirrored(false));

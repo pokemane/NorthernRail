@@ -14,7 +14,7 @@ public class NorthernRail {
     public static final String CHANNEL = "NorthernRail";
     public static final String RESOURCE_PATH = "assets/northernrail/";
 
-    public static final CreativeTabs TAB = new CreativeTabs(CHANNEL) {
+    public static final CreativeTabs TAB = new CreativeTabs(MODNAME) {
         @Override
         public Item getTabIconItem() {
             return Item.getItemFromBlock(Blocks.activator_rail);

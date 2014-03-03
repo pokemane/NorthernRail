@@ -11,6 +11,8 @@ import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 import pokemane.northernrail.client.render.RailIconProvider;
+import pokemane.northernrail.common.NorthernRail;
+import pokemane.northernrail.common.NorthernRailLoader;
 
 /**
  * Created by pokemane on 2/15/14.
@@ -22,6 +24,7 @@ public class TestRail extends NRRailBlockBase {
 
     public TestRail(){
         super(false);
+	    setCreativeTab(NorthernRail.TAB);
     }
 
     @SideOnly(Side.CLIENT)

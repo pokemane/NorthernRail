@@ -13,16 +13,10 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.*;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
-import org.lwjgl.Sys;
-import pokemane.northernrail.api.rail.RailRegistry;
-import pokemane.northernrail.api.rail.RailType;
 import pokemane.northernrail.client.render.RailIconProvider;
 import pokemane.northernrail.common.NorthernRail;
-import pokemane.northernrail.common.NorthernRailLoader;
 import pokemane.northernrail.common.block.TileEntityRail;
 import pokemane.northernrail.core.util.BlockDataManager;
-import pokemane.northernrail.core.util.BlockPosition;
-import pokemane.northernrail.core.util.RailFactory;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -67,7 +61,7 @@ public class RailBaseNR extends BlockRailBase {
 		setResistance(3.5F);
 		setHardness(1.05F);
 		setStepSound(soundTypeMetal);
-		setCreativeTab(NorthernRailLoader.creativeTabNR);
+		setCreativeTab(NorthernRail.TAB);
 	}
 
 	protected RailBaseNR(boolean powered) {
@@ -88,11 +82,9 @@ public class RailBaseNR extends BlockRailBase {
 	public void onBlockPlacedBy(World world, int x, int y, int z, EntityLivingBase player, ItemStack stack) {
 		TileEntity tile = world.getTileEntity(x,y,z);
 		short damage = (short)stack.getItemDamage();
-		System.out.println(damage);
 		NBTTagCompound tag = new NBTTagCompound();
 		tag.setShort(NorthernRail.RAIL_ID_TAG, damage);
 		((TileEntityRail)tile).readItemData(tag);
-		System.out.println(tag);
 		world.markBlockForUpdate(x,y,z);
 	}
 

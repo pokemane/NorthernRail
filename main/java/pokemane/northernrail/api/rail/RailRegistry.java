@@ -17,7 +17,7 @@ public final class RailRegistry {
 		return railTypeRegistry.get(key);
 	}
 
-	public static int getNextAvailableRailId(){
-		return railTypeRegistry.size();
+	public static short getNextAvailableRailId(){
+		return (short)railTypeRegistry.size();
 	}
 }

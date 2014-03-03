@@ -73,8 +73,8 @@ public class ItemBlockRail extends ItemBlock {
 	 */
 	@Override
 	public String getUnlocalizedName(ItemStack itemStack) {
-		int damage = itemStack.getItemDamage();
-		return RailRegistry.getRailType((short)damage).getRailTag();
+		short damage = (short)itemStack.getItemDamage();
+		return RailRegistry.getRailType(damage).getRailTag();
 	}
 
 	/**

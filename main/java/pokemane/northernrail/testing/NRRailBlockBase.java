@@ -24,7 +24,7 @@ public abstract class NRRailBlockBase extends BlockRailBase{
         super(powered);
         this.isPoweredRail = powered;
         this.setBlockBounds(0.0F, 0.0F, 0.0F, 1.0F, 0.125F, 1.0F);
-        this.setCreativeTab(NorthernRailLoader.creativeTabNR);
+        this.setCreativeTab(NorthernRail.TAB);
     }
 
     public boolean isRailBlockAt(World world, int x, int y, int z) {
