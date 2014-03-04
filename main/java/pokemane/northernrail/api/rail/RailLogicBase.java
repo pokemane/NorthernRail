@@ -1,27 +1,20 @@
 package pokemane.northernrail.api.rail;
 
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockRailBase;
 import net.minecraft.entity.item.EntityMinecart;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.util.IIcon;
-import net.minecraft.util.MovingObjectPosition;
-import net.minecraft.util.Vec3;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
-import pokemane.northernrail.common.NorthernRail;
 import pokemane.northernrail.common.block.TileEntityRail;
-
-import java.util.Random;
 
 /**
  * Created by pokemane on 2/21/14.
  */
 public abstract class RailLogicBase implements IRailLogic {
 
-	public Block block;
 	private TileEntity tileEntity;
 
 
@@ -75,6 +68,31 @@ public abstract class RailLogicBase implements IRailLogic {
 
 	}
 
+	/**
+	 * Return the rail's metadata (without the power bit if the rail uses one).
+	 * Can be used to make the cart think the rail something other than it is,
+	 * for example when making diamond junctions or switches.
+	 * The cart parameter will often be null unless it it called from EntityMinecart.
+	 *
+	 * Valid rail metadata is defined as follows:
+	 * 0x0: flat track going North-South
+	 * 0x1: flat track going West-East
+	 * 0x2: track ascending to the East
+	 * 0x3: track ascending to the West
+	 * 0x4: track ascending to the North
+	 * 0x5: track ascending to the South
+	 * 0x6: WestNorth corner (connecting East and South)
+	 * 0x7: EastNorth corner (connecting West and South)
+	 * 0x8: EastSouth corner (connecting West and North)
+	 * 0x9: WestSouth corner (connecting East and North)
+	 *
+	 * @param world The world.
+	 * @param cart The cart asking for the metadata, null if it is not called by EntityMinecart.
+	 * @param y The rail X coordinate.
+	 * @param x The rail Y coordinate.
+	 * @param z The rail Z coordinate.
+	 * @return The metadata.
+	 */
 	@Override
 	public int getBasicRailMetadata(IBlockAccess world, EntityMinecart cart, int x, int y, int z) {
 		int meta = world.getBlockMetadata(x, y, z);
@@ -105,53 +123,46 @@ public abstract class RailLogicBase implements IRailLogic {
 		return false;
 	}
 
+	public boolean isRailPositionValid(World world, int x, int y, int z, int meta) {
+		boolean valid = false;
+		if (!World.doesBlockHaveSolidTopSurface(world, x, y-1, z)) {
+			valid = true;
+		}
+		if ((meta == 2) && (!World.doesBlockHaveSolidTopSurface(world, x + 1, y, z))) {
+			valid = true;
+		} else if ((meta == 3) && (!World.doesBlockHaveSolidTopSurface(world, x - 1, y, z))) {
+			valid = true;
+		} else if ((meta == 4) && (!World.doesBlockHaveSolidTopSurface(world, x, y, z - 1))) {
+			valid = true;
+		} else if ((meta == 5) && (!World.doesBlockHaveSolidTopSurface(world, x, y, z + 1))) {
+			valid = true;
+		}
+		return valid;
+	}
+
 	@Override
 	public void onNeighborBlockChange(World world, int x, int y, int z, Block neighborBlock) {
 		if (!world.isRemote)
 		{
-			int l = world.getBlockMetadata(x, y, z);
-			int i1 = l;
+			int metadata = world.getBlockMetadata(x, y, z);
+			int newMetadata = metadata;
 
 			if (isPowered())
 			{
-				i1 = l & 7;
+				newMetadata = metadata & 7;
 			}
 
-			boolean flag = false;
-
-			if (!World.doesBlockHaveSolidTopSurface(world, x, y - 1, z))
-			{
-				flag = true;
-			}
-
-			if (i1 == 2 && !World.doesBlockHaveSolidTopSurface(world, x + 1, y, z))
-			{
-				flag = true;
-			}
-
-			if (i1 == 3 && !World.doesBlockHaveSolidTopSurface(world, x - 1, y, z))
-			{
-				flag = true;
-			}
-
-			if (i1 == 4 && !World.doesBlockHaveSolidTopSurface(world, x, y, z - 1))
-			{
-				flag = true;
-			}
-
-			if (i1 == 5 && !World.doesBlockHaveSolidTopSurface(world, x, y, z + 1))
-			{
-				flag = true;
-			}
+			boolean flag = isRailPositionValid(world, x, y, z, newMetadata);
 
 			if (flag)
 			{
-				block.dropBlockAsItem(world, x, y, z, world.getBlockMetadata(x, y, z), 0);
+				Block thisBlock = world.getBlock(x,y,z);
+				thisBlock.dropBlockAsItem(world, x, y, z, world.getBlockMetadata(x, y, z), 0);
 				world.setBlockToAir(x, y, z);
 			}
 			else
 			{
-				onRedstoneSignal(world, x, y, z, l, i1, neighborBlock);
+				updateRail(world, x,y,z, 0, newMetadata, neighborBlock);
 			}
 		}
 	}
@@ -162,8 +173,8 @@ public abstract class RailLogicBase implements IRailLogic {
 	}
 
 	@Override
-	public boolean isFlexibleRail() {
-		return !isPowered();
+	public boolean isStraightRail() {
+		return isPowered();
 	}
 
 	@Override
@@ -182,7 +193,12 @@ public abstract class RailLogicBase implements IRailLogic {
 	}
 
 	@Override
-	public void onRedstoneSignal(World world, int x, int y, int z, int side, int meta, Block block) {
+	public void updateRail(World world, int x, int y, int z, int side, int metadata, Block neighborBlock) {
+
+	}
+
+	@Override
+	public void changeRail(World world, int x, int y, int z, boolean bool) {
 
 	}
 }

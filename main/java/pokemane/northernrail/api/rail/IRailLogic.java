@@ -53,7 +53,7 @@ public interface IRailLogic {
 
 	public abstract boolean canUpdate();
 
-	public abstract boolean isFlexibleRail();
+	public abstract boolean isStraightRail();
 
 	public abstract boolean canMakeSlopes();
 
@@ -61,6 +61,8 @@ public interface IRailLogic {
 
 	public abstract void updateEntity();
 
-	public abstract void onRedstoneSignal(World world, int x, int y, int z, int side, int meta, Block block);
+	public abstract void updateRail(World world, int x, int y, int z, int side, int metadata, Block neighborBlock);
+
+	public abstract void changeRail(World world, int x, int y, int z, boolean bool);
 
 }

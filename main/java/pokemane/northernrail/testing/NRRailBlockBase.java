@@ -158,7 +158,7 @@ public abstract class NRRailBlockBase extends BlockRailBase{
         }
     }
 
-    public void onRedstoneSignal(World world, int x, int y, int z, int oldMetadata, int newMetadata, Block block){
+    public void switchRail(World world, int x, int y, int z, int oldMetadata, int newMetadata, Block block){
         func_150048_a(world,x,y,z,oldMetadata,newMetadata,block);
     }
 

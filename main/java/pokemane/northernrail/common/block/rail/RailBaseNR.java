@@ -123,18 +123,14 @@ public class RailBaseNR extends BlockRailBase {
 	@Override
 	public IIcon getIcon(IBlockAccess world, int x, int y, int z, int side) {
 		TileEntity tile = world.getTileEntity(x,y,z);
-		if (tile instanceof TileEntityRail){
-			short id = ((TileEntityRail) tile).getRailId();
-			return RailIconProvider.INSTANCE.getIconFromRailId(id);
-		}
-		return RailIconProvider.INSTANCE.getIconFromRailId((short)0);
+		short id = ((TileEntityRail) tile).getRailId();
+		return RailIconProvider.INSTANCE.getIconFromRailId(id);
 	}
 
 	@Override
 	public void registerBlockIcons(IIconRegister iconRegister) {
 		RailIconProvider.INSTANCE.registerIcons(iconRegister);
 	}
-
 
 	/**
 	 * Returns true if the block is power related logic.
@@ -324,15 +320,19 @@ public class RailBaseNR extends BlockRailBase {
 	 * Lets the block know when one of its neighbor changes. Doesn't know which neighbor changed (coordinates passed are
 	 * their own) Args: x, y, z, neighbor Block
 	 *
-	 * @param p_149695_1_
-	 * @param p_149695_2_
-	 * @param p_149695_3_
-	 * @param p_149695_4_
-	 * @param p_149695_5_
+	 * @param world
+	 * @param x
+	 * @param y
+	 * @param z
+	 * @param neighborBlock
 	 */
 	@Override
-	public void onNeighborBlockChange(World p_149695_1_, int p_149695_2_, int p_149695_3_, int p_149695_4_, Block p_149695_5_) {
-		super.onNeighborBlockChange(p_149695_1_, p_149695_2_, p_149695_3_, p_149695_4_, p_149695_5_);
+	public void onNeighborBlockChange(World world, int x, int y, int z, Block neighborBlock) {
+		TileEntity tile = world.getTileEntity(x,y,z);
+		if (tile instanceof TileEntityRail){
+			((TileEntityRail) tile).getRailType().getRailClass().onNeighborBlockChange(world,x,y,z,neighborBlock);
+		}
+		//super.onNeighborBlockChange(world, x, y, z, neighborBlock);
 	}
 
 	@Override
@@ -368,7 +368,7 @@ public class RailBaseNR extends BlockRailBase {
 	public boolean isFlexibleRail(IBlockAccess world, int y, int x, int z) {
 		TileEntity tile = world.getTileEntity(x,y,z);
 		if (tile instanceof TileEntityRail){
-			return ((TileEntityRail) tile).getRailType().getRailClass().isFlexibleRail();
+			return ((TileEntityRail) tile).getRailType().getRailClass().isStraightRail();
 		}
 		return false;
 	}

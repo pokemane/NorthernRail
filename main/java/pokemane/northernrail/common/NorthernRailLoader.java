@@ -26,6 +26,7 @@ import pokemane.northernrail.common.block.TileEntityRail;
 import pokemane.northernrail.common.block.rail.ItemBlockRail;
 import pokemane.northernrail.common.block.rail.RailBaseNR;
 import pokemane.northernrail.common.block.rail.RailDefault;
+import pokemane.northernrail.common.block.rail.RailJunction;
 import pokemane.northernrail.core.network.packet.PacketPipeline;
 import pokemane.northernrail.testing.TestPoweredRail;
 import pokemane.northernrail.testing.TestRail;
@@ -68,7 +69,7 @@ public class NorthernRailLoader {
 
 	    RailRegistry.addRailType(new RailType(RailRegistry.getNextAvailableRailId(), "rail_normal", new RailDefault()));
 	    RailRegistry.addRailType(new RailType(RailRegistry.getNextAvailableRailId(), "rail_golden", new RailDefault()));
-	    RailRegistry.addRailType(new RailType(RailRegistry.getNextAvailableRailId(), "rail_activator", new RailDefault()));
+	    RailRegistry.addRailType(new RailType(RailRegistry.getNextAvailableRailId(), "rail_activator", new RailJunction()));
 
 		//todo get these specific instances saved to my mod class for later reference.
         newRail = (new TestRail()).setBlockName("NewRail").setBlockTextureName("rail_normal");
