@@ -314,6 +314,7 @@ public class RailBaseNR extends BlockRailBase {
 	@Override
 	public void onBlockAdded(World world, int x, int y, int z) {
 		super.onBlockAdded(world, x, y, z);
+		world.markBlockForUpdate(x,y,z);
 	}
 
 	/**
@@ -329,7 +330,7 @@ public class RailBaseNR extends BlockRailBase {
 	@Override
 	public void onNeighborBlockChange(World world, int x, int y, int z, Block neighborBlock) {
 		TileEntity tile = world.getTileEntity(x,y,z);
-		if (tile instanceof TileEntityRail){
+		if (tile instanceof TileEntityRail) {
 			((TileEntityRail) tile).getRailType().getRailClass().onNeighborBlockChange(world,x,y,z,neighborBlock);
 		}
 		//super.onNeighborBlockChange(world, x, y, z, neighborBlock);

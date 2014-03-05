@@ -70,6 +70,11 @@ public class TileEntityRail extends TileEntity {
 		return false;
 	}
 
+	@Override
+	public void updateEntity() {
+		super.updateEntity();
+	}
+
 	public void onBlockBroken() {
 		NBTTagCompound tag = new NBTTagCompound();
 		writeItemData(tag);

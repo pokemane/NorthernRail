@@ -1,7 +1,6 @@
 package pokemane.northernrail.api.rail;
 
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockRailBase;
 import net.minecraft.entity.item.EntityMinecart;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
@@ -123,7 +122,7 @@ public abstract class RailLogicBase implements IRailLogic {
 		return false;
 	}
 
-	public boolean isRailPositionValid(World world, int x, int y, int z, int meta) {
+	public boolean isRailPositionInvalid(World world, int x, int y, int z, int meta) {
 		boolean valid = false;
 		if (!World.doesBlockHaveSolidTopSurface(world, x, y-1, z)) {
 			valid = true;
@@ -142,26 +141,19 @@ public abstract class RailLogicBase implements IRailLogic {
 
 	@Override
 	public void onNeighborBlockChange(World world, int x, int y, int z, Block neighborBlock) {
-		if (!world.isRemote)
-		{
+		if (!world.isRemote) {
 			int metadata = world.getBlockMetadata(x, y, z);
 			int newMetadata = metadata;
 
-			if (isPowered())
-			{
+			if (isPowered()) {
 				newMetadata = metadata & 7;
 			}
-
-			boolean flag = isRailPositionValid(world, x, y, z, newMetadata);
-
-			if (flag)
-			{
+			if (isRailPositionInvalid(world, x, y, z, newMetadata))	{
 				Block thisBlock = world.getBlock(x,y,z);
 				thisBlock.dropBlockAsItem(world, x, y, z, world.getBlockMetadata(x, y, z), 0);
 				world.setBlockToAir(x, y, z);
 			}
-			else
-			{
+			else {
 				updateRail(world, x,y,z, 0, newMetadata, neighborBlock);
 			}
 		}
@@ -194,7 +186,7 @@ public abstract class RailLogicBase implements IRailLogic {
 
 	@Override
 	public void updateRail(World world, int x, int y, int z, int side, int metadata, Block neighborBlock) {
-
+		world.markBlockForUpdate(x,y,z);
 	}
 
 	@Override
