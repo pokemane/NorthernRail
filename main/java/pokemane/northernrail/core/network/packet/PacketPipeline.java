@@ -41,17 +41,17 @@ public class PacketPipeline extends MessageToMessageCodec<FMLProxyPacket, Abstra
     /**
      * Register your packet with the pipeline. Discriminators are automatically set.
      *
-     * @param clazz the class to register
+     * @param packet the class to register
      *
      * @return whether registration was successful. Failure may occur if 256 packets have been registered or if the registry already contains this packet
      */
-    public boolean registerPacket(Class<? extends AbstractPacket> clazz) {
+    public boolean registerPacket(Class<? extends AbstractPacket> packet) {
         if (this.packets.size() > 256) {
             // You should log here!!
             return false;
         }
 
-        if (this.packets.contains(clazz)) {
+        if (this.packets.contains(packet)) {
             // You should log here!!
             return false;
         }
@@ -61,7 +61,7 @@ public class PacketPipeline extends MessageToMessageCodec<FMLProxyPacket, Abstra
             return false;
         }
 
-        this.packets.add(clazz);
+        this.packets.add(packet);
         return true;
     }
 

@@ -2,6 +2,7 @@ package pokemane.northernrail.common.block;
 
 import net.minecraft.block.Block;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.network.NetworkManager;
 import net.minecraft.network.Packet;
 import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
@@ -23,6 +24,10 @@ public class TileEntityRail extends TileEntity {
 
 	public short getRailId() {
 		return railId;
+	}
+
+	public void setRailId(short railId) {
+		this.railId = railId;
 	}
 
 	private short railId = 0;
@@ -105,8 +110,24 @@ public class TileEntityRail extends TileEntity {
 	public Packet getDescriptionPacket() {
 		NBTTagCompound tag = new NBTTagCompound();
 		this.writeToNBT(tag);
+		return new S35PacketUpdateTileEntity(this.xCoord,this.yCoord,this.zCoord,0,tag);
+		//return super.getDescriptionPacket();
+	}
 
-		return super.getDescriptionPacket();
+	/**
+	 * Called when you receive a TileEntityData packet for the location this
+	 * TileEntity is currently in. On the client, the NetworkManager will always
+	 * be the remote server. On the server, it will be whomever is responsible for
+	 * sending the packet.
+	 *
+	 * @param net The NetworkManager the packet originated from
+	 * @param pkt The data packet
+	 */
+	@Override
+	public void onDataPacket(NetworkManager net, S35PacketUpdateTileEntity pkt) {
+		NBTTagCompound tag = pkt.func_148857_g();
+		readFromNBT(tag);
+		//super.onDataPacket(net, pkt);
 	}
 
 	public void onBlockBroken() {
