@@ -15,7 +15,7 @@ import java.util.HashMap;
  */
 public class RailIconProvider implements IRailIconProvider {
 	public static final RailIconProvider INSTANCE = new RailIconProvider();
-	private static final HashMap<Short, IIcon> railTypeIIconHashMap = new HashMap<Short, IIcon>();
+	private static final HashMap<Integer, IIcon> railTypeIIconHashMap = new HashMap<Integer, IIcon>();
 
 	public void registerIcons(IIconRegister iconRegister){
 		for (RailType railType : RailRegistry.railTypeRegistry.values()){
@@ -25,7 +25,7 @@ public class RailIconProvider implements IRailIconProvider {
 	}
 
 	@Override
-	public IIcon getIconFromRailId(short id) {
+	public IIcon getIconFromRailId(int id) {
 		return railTypeIIconHashMap.get(id);
 	}
 

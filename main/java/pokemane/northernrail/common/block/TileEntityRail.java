@@ -22,7 +22,7 @@ public class TileEntityRail extends TileEntity {
 		super();
 	}
 
-	public short getRailId() {
+	public int getRailId() {
 		return railId;
 	}
 
@@ -30,7 +30,7 @@ public class TileEntityRail extends TileEntity {
 		this.railId = railId;
 	}
 
-	private short railId = 0;
+	private int railId = 0;
 
 	public int getX(){return this.xCoord;}
 	public int getY(){return this.yCoord;}
@@ -45,7 +45,7 @@ public class TileEntityRail extends TileEntity {
 	}
 
 	public void readItemData(NBTTagCompound tag) {
-		this.railId = tag.getShort(NorthernRail.RAIL_ID_TAG);
+		this.railId = tag.getInteger(NorthernRail.RAIL_ID_TAG);
 	}
 
 	@Override
@@ -56,7 +56,7 @@ public class TileEntityRail extends TileEntity {
 	}
 
 	public void writeItemData(NBTTagCompound tag) {
-		tag.setShort(NorthernRail.RAIL_ID_TAG, railId);
+		tag.setInteger(NorthernRail.RAIL_ID_TAG, railId);
 	}
 
 	public RailType getRailType(){

@@ -15,7 +15,7 @@ public final class RailType {
 	//tooltips for eventually making tooltips
 	private final String tooltip;
 	private final IRailLogic railClass;
-	private final short railId;
+	private final int railId;
 
 	private HashMap<Integer, IIcon[]> iconHashMap = new HashMap<Integer, IIcon[]>();
 
@@ -30,7 +30,7 @@ public final class RailType {
 		this.railTag = railTag;
 	}
 
-	public short getRailId() {
+	public int getRailId() {
 		return railId;
 	}
 

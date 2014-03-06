@@ -123,7 +123,7 @@ public class RailBaseNR extends BlockRailBase {
 	@Override
 	public IIcon getIcon(IBlockAccess world, int x, int y, int z, int side) {
 		TileEntity tile = world.getTileEntity(x,y,z);
-		short id = ((TileEntityRail) tile).getRailId();
+		int id = ((TileEntityRail) tile).getRailId();
 		return RailIconProvider.INSTANCE.getIconFromRailId(id);
 	}
 
@@ -167,7 +167,7 @@ public class RailBaseNR extends BlockRailBase {
 	public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int side, float p_149727_7_, float p_149727_8_, float p_149727_9_) {
 		TileEntity tile = world.getTileEntity(x,y,z);
 		if (tile instanceof TileEntityRail){
-			short id = ((TileEntityRail) tile).getRailId();
+			int id = ((TileEntityRail) tile).getRailId();
 			if(world.isRemote) System.out.println("rail id: " + id);
 			return ((TileEntityRail) tile).getRailType().getRailClass().onBlockActivated(player);
 		}
@@ -191,7 +191,7 @@ public class RailBaseNR extends BlockRailBase {
 		Item item = getItemDropped(metadata, world.rand, fortune);
 		if (!world.isRemote) {
 			NBTTagCompound tag = BlockDataManager.getForBlock(x, y, z);
-			int damage = tag.getShort(NorthernRail.RAIL_ID_TAG);
+			int damage = tag.getInteger(NorthernRail.RAIL_ID_TAG);
 			stackArray.add(new ItemStack(item,1,damage));
 		}
 		return stackArray;
