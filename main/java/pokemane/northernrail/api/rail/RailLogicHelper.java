@@ -18,72 +18,71 @@ public class RailLogicHelper
 	private int railZ;
 	private final boolean isFlexible;
 	private List chunkArray = new ArrayList();
-	private static final String __OBFID = "CL_00000196";
 	private final boolean canMakeSlopes;
 
-	public RailLogicHelper(World p_i45388_2_, int p_i45388_3_, int p_i45388_4_, int p_i45388_5_)
+	public RailLogicHelper(World world, int x, int y, int z)
 	{
-		this.railWorld = p_i45388_2_;
-		this.railX = p_i45388_3_;
-		this.railY = p_i45388_4_;
-		this.railZ = p_i45388_5_;
-		BlockRailBase block = (BlockRailBase)p_i45388_2_.getBlock(p_i45388_3_, p_i45388_4_, p_i45388_5_);
-		int l = block.getBasicRailMetadata(p_i45388_2_, null, p_i45388_3_, p_i45388_4_, p_i45388_5_);
-		this.isFlexible = block.isFlexibleRail(p_i45388_2_, p_i45388_3_, p_i45388_4_, p_i45388_5_);
-		canMakeSlopes = block.canMakeSlopes(p_i45388_2_, p_i45388_3_, p_i45388_4_, p_i45388_5_);
-		this.func_150648_a(l);
+		this.railWorld = world;
+		this.railX = x;
+		this.railY = y;
+		this.railZ = z;
+		BlockRailBase block = (BlockRailBase)world.getBlock(x, y, z);
+		int l = block.getBasicRailMetadata(world, null, x, y, z);
+		this.isFlexible = block.isFlexibleRail(world, x, y, z);
+		canMakeSlopes = block.canMakeSlopes(world, x, y, z);
+		this.listPotentialConnections(l);
 	}
 
-	private void func_150648_a(int p_150648_1_)
+	private void listPotentialConnections(int metadata)
 	{
 		this.chunkArray.clear();
 
-		if (p_150648_1_ == 0)
+		if (metadata == 0)
 		{
 			this.chunkArray.add(new ChunkPosition(this.railX, this.railY, this.railZ - 1));
 			this.chunkArray.add(new ChunkPosition(this.railX, this.railY, this.railZ + 1));
 		}
-		else if (p_150648_1_ == 1)
+		else if (metadata == 1)
 		{
 			this.chunkArray.add(new ChunkPosition(this.railX - 1, this.railY, this.railZ));
 			this.chunkArray.add(new ChunkPosition(this.railX + 1, this.railY, this.railZ));
 		}
-		else if (p_150648_1_ == 2)
+		else if (metadata == 2)
 		{
 			this.chunkArray.add(new ChunkPosition(this.railX - 1, this.railY, this.railZ));
 			this.chunkArray.add(new ChunkPosition(this.railX + 1, this.railY + 1, this.railZ));
 		}
-		else if (p_150648_1_ == 3)
+		else if (metadata == 3)
 		{
 			this.chunkArray.add(new ChunkPosition(this.railX - 1, this.railY + 1, this.railZ));
 			this.chunkArray.add(new ChunkPosition(this.railX + 1, this.railY, this.railZ));
 		}
-		else if (p_150648_1_ == 4)
+		else if (metadata == 4)
 		{
 			this.chunkArray.add(new ChunkPosition(this.railX, this.railY + 1, this.railZ - 1));
 			this.chunkArray.add(new ChunkPosition(this.railX, this.railY, this.railZ + 1));
 		}
-		else if (p_150648_1_ == 5)
+		else if (metadata == 5)
 		{
 			this.chunkArray.add(new ChunkPosition(this.railX, this.railY, this.railZ - 1));
 			this.chunkArray.add(new ChunkPosition(this.railX, this.railY + 1, this.railZ + 1));
 		}
-		else if (p_150648_1_ == 6)
+		else if (metadata == 6)
 		{
 			this.chunkArray.add(new ChunkPosition(this.railX + 1, this.railY, this.railZ));
 			this.chunkArray.add(new ChunkPosition(this.railX, this.railY, this.railZ + 1));
 		}
-		else if (p_150648_1_ == 7)
+		else if (metadata == 7)
 		{
 			this.chunkArray.add(new ChunkPosition(this.railX - 1, this.railY, this.railZ));
 			this.chunkArray.add(new ChunkPosition(this.railX, this.railY, this.railZ + 1));
 		}
-		else if (p_150648_1_ == 8)
+		else if (metadata == 8)
 		{
 			this.chunkArray.add(new ChunkPosition(this.railX - 1, this.railY, this.railZ));
 			this.chunkArray.add(new ChunkPosition(this.railX, this.railY, this.railZ - 1));
 		}
-		else if (p_150648_1_ == 9)
+		else if (metadata == 9)
 		{
 			this.chunkArray.add(new ChunkPosition(this.railX + 1, this.railY, this.railZ));
 			this.chunkArray.add(new ChunkPosition(this.railX, this.railY, this.railZ - 1));
@@ -94,9 +93,9 @@ public class RailLogicHelper
 	{
 		for (int i = 0; i < this.chunkArray.size(); ++i)
 		{
-			RailLogicHelper rail = this.func_150654_a((ChunkPosition)this.chunkArray.get(i));
+			RailLogicHelper rail = this.createRailHelperAtAboveOrBelow((ChunkPosition) this.chunkArray.get(i));
 
-			if (rail != null && rail.func_150653_a(this))
+			if (rail != null && rail.isRailAdjacent(this))
 			{
 				this.chunkArray.set(i, new ChunkPosition(rail.railX, rail.railY, rail.railZ));
 			}
@@ -107,22 +106,22 @@ public class RailLogicHelper
 		}
 	}
 
-	private boolean isRailBlockAt(int p_150646_1_, int p_150646_2_, int p_150646_3_)
+	private boolean isRailBlockAtAboveOrBelow(int x, int y, int z)
 	{
-		return BlockRailBase.func_150049_b_(this.railWorld, p_150646_1_, p_150646_2_, p_150646_3_) || (BlockRailBase.func_150049_b_(this.railWorld, p_150646_1_, p_150646_2_ + 1, p_150646_3_) || BlockRailBase.func_150049_b_(this.railWorld, p_150646_1_, p_150646_2_ - 1, p_150646_3_));
+		return BlockRailBase.func_150049_b_(this.railWorld, x, y, z) || (BlockRailBase.func_150049_b_(this.railWorld, x, y + 1, z) || BlockRailBase.func_150049_b_(this.railWorld, x, y - 1, z));
 	}
 
-	private RailLogicHelper func_150654_a(ChunkPosition p_150654_1_)
+	private RailLogicHelper createRailHelperAtAboveOrBelow(ChunkPosition chunkPos)
 	{
-		return BlockRailBase.func_150049_b_(this.railWorld, p_150654_1_.chunkPosX, p_150654_1_.chunkPosY, p_150654_1_.chunkPosZ) ? new RailLogicHelper(this.railWorld, p_150654_1_.chunkPosX, p_150654_1_.chunkPosY, p_150654_1_.chunkPosZ) : (BlockRailBase.func_150049_b_(this.railWorld, p_150654_1_.chunkPosX, p_150654_1_.chunkPosY + 1, p_150654_1_.chunkPosZ) ? new RailLogicHelper(this.railWorld, p_150654_1_.chunkPosX, p_150654_1_.chunkPosY + 1, p_150654_1_.chunkPosZ) : (BlockRailBase.func_150049_b_(this.railWorld, p_150654_1_.chunkPosX, p_150654_1_.chunkPosY - 1, p_150654_1_.chunkPosZ) ? new RailLogicHelper(this.railWorld, p_150654_1_.chunkPosX, p_150654_1_.chunkPosY - 1, p_150654_1_.chunkPosZ) : null));
+		return BlockRailBase.func_150049_b_(this.railWorld, chunkPos.chunkPosX, chunkPos.chunkPosY, chunkPos.chunkPosZ) ? new RailLogicHelper(this.railWorld, chunkPos.chunkPosX, chunkPos.chunkPosY, chunkPos.chunkPosZ) : (BlockRailBase.func_150049_b_(this.railWorld, chunkPos.chunkPosX, chunkPos.chunkPosY + 1, chunkPos.chunkPosZ) ? new RailLogicHelper(this.railWorld, chunkPos.chunkPosX, chunkPos.chunkPosY + 1, chunkPos.chunkPosZ) : (BlockRailBase.func_150049_b_(this.railWorld, chunkPos.chunkPosX, chunkPos.chunkPosY - 1, chunkPos.chunkPosZ) ? new RailLogicHelper(this.railWorld, chunkPos.chunkPosX, chunkPos.chunkPosY - 1, chunkPos.chunkPosZ) : null));
 	}
 
-	private boolean func_150653_a(RailLogicHelper p_150653_1_)
+	private boolean isRailAdjacent(RailLogicHelper rail)
 	{
 		for (Object aChunkPos : this.chunkArray) {
 			ChunkPosition chunkposition = (ChunkPosition) aChunkPos;
 
-			if (chunkposition.chunkPosX == p_150653_1_.railX && chunkposition.chunkPosZ == p_150653_1_.railZ) {
+			if (chunkposition.chunkPosX == rail.railX && chunkposition.chunkPosZ == rail.railZ) {
 				return true;
 			}
 		}
@@ -130,12 +129,12 @@ public class RailLogicHelper
 		return false;
 	}
 
-	private boolean func_150652_b(int p_150652_1_, int p_150652_2_, int p_150652_3_)
+	private boolean isRailAdjacent(int x, int y, int z)
 	{
 		for (Object aChunkArray : this.chunkArray) {
 			ChunkPosition chunkposition = (ChunkPosition) aChunkArray;
 
-			if (chunkposition.chunkPosX == p_150652_1_ && chunkposition.chunkPosZ == p_150652_3_) {
+			if (chunkposition.chunkPosX == x && chunkposition.chunkPosZ == z) {
 				return true;
 			}
 		}
@@ -147,22 +146,22 @@ public class RailLogicHelper
 	{
 		int i = 0;
 
-		if (this.isRailBlockAt(this.railX, this.railY, this.railZ - 1))
+		if (this.isRailBlockAtAboveOrBelow(this.railX, this.railY, this.railZ - 1))
 		{
 			++i;
 		}
 
-		if (this.isRailBlockAt(this.railX, this.railY, this.railZ + 1))
+		if (this.isRailBlockAtAboveOrBelow(this.railX, this.railY, this.railZ + 1))
 		{
 			++i;
 		}
 
-		if (this.isRailBlockAt(this.railX - 1, this.railY, this.railZ))
+		if (this.isRailBlockAtAboveOrBelow(this.railX - 1, this.railY, this.railZ))
 		{
 			++i;
 		}
 
-		if (this.isRailBlockAt(this.railX + 1, this.railY, this.railZ))
+		if (this.isRailBlockAtAboveOrBelow(this.railX + 1, this.railY, this.railZ))
 		{
 			++i;
 		}
@@ -170,48 +169,48 @@ public class RailLogicHelper
 		return i;
 	}
 
-	private boolean func_150649_b(RailLogicHelper p_150649_1_)
+	private boolean func_150649_b(RailLogicHelper rail)
 	{
-		return this.func_150653_a(p_150649_1_) || (this.chunkArray.size() != 2);
+		return this.isRailAdjacent(rail) || (this.chunkArray.size() != 2);
 	}
 
-	private void func_150645_c(RailLogicHelper p_150645_1_)
+	private void func_150645_c(RailLogicHelper rail)
 	{
-		this.chunkArray.add(new ChunkPosition(p_150645_1_.railX, p_150645_1_.railY, p_150645_1_.railZ));
-		boolean flag = this.func_150652_b(this.railX, this.railY, this.railZ - 1);
-		boolean flag1 = this.func_150652_b(this.railX, this.railY, this.railZ + 1);
-		boolean flag2 = this.func_150652_b(this.railX - 1, this.railY, this.railZ);
-		boolean flag3 = this.func_150652_b(this.railX + 1, this.railY, this.railZ);
+		this.chunkArray.add(new ChunkPosition(rail.railX, rail.railY, rail.railZ));
+		boolean north = this.isRailAdjacent(this.railX, this.railY, this.railZ - 1);
+		boolean south = this.isRailAdjacent(this.railX, this.railY, this.railZ + 1);
+		boolean west = this.isRailAdjacent(this.railX - 1, this.railY, this.railZ);
+		boolean east = this.isRailAdjacent(this.railX + 1, this.railY, this.railZ);
 		byte b0 = -1;
 
-		if (flag || flag1)
+		if (north || south)
 		{
 			b0 = 0;
 		}
 
-		if (flag2 || flag3)
+		if (west || east)
 		{
 			b0 = 1;
 		}
 
 		if (!this.isFlexible)
 		{
-			if (flag1 && flag3 && !flag && !flag2)
+			if (south && east && !north && !west)
 			{
 				b0 = 6;
 			}
 
-			if (flag1 && flag2 && !flag && !flag3)
+			if (south && west && !north && !east)
 			{
 				b0 = 7;
 			}
 
-			if (flag && flag2 && !flag1 && !flag3)
+			if (north && west && !south && !east)
 			{
 				b0 = 8;
 			}
 
-			if (flag && flag3 && !flag1 && !flag2)
+			if (north && east && !south && !west)
 			{
 				b0 = 9;
 			}
@@ -260,7 +259,7 @@ public class RailLogicHelper
 
 	private boolean func_150647_c(int p_150647_1_, int p_150647_2_, int p_150647_3_)
 	{
-		RailLogicHelper rail = this.func_150654_a(new ChunkPosition(p_150647_1_, p_150647_2_, p_150647_3_));
+		RailLogicHelper rail = this.createRailHelperAtAboveOrBelow(new ChunkPosition(p_150647_1_, p_150647_2_, p_150647_3_));
 
 		if (rail == null)
 		{
@@ -406,7 +405,7 @@ public class RailLogicHelper
 			b0 = 0;
 		}
 
-		this.func_150648_a(b0);
+		this.listPotentialConnections(b0);
 		int i = b0;
 
 		if (this.isFlexible)
@@ -418,16 +417,13 @@ public class RailLogicHelper
 		{
 			this.railWorld.setBlockMetadataWithNotify(this.railX, this.railY, this.railZ, i, 3);
 
-			for (int j = 0; j < this.chunkArray.size(); ++j)
-			{
-				RailLogicHelper rail = this.func_150654_a((ChunkPosition)this.chunkArray.get(j));
+			for (Object aChunkPos : this.chunkArray) {
+				RailLogicHelper rail = this.createRailHelperAtAboveOrBelow((ChunkPosition) aChunkPos);
 
-				if (rail != null)
-				{
+				if (rail != null) {
 					rail.func_150651_b();
 
-					if (rail.func_150649_b(this))
-					{
+					if (rail.func_150649_b(this)) {
 						rail.func_150645_c(this);
 					}
 				}

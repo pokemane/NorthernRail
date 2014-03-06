@@ -1,6 +1,7 @@
 package pokemane.northernrail.api.rail;
 
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockRailBase;
 import net.minecraft.entity.item.EntityMinecart;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
@@ -191,6 +192,5 @@ public abstract class RailLogicBase implements IRailLogic {
 
 	@Override
 	public void changeRail(World world, int x, int y, int z, boolean bool) {
-
 	}
 }
