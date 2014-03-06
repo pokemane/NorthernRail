@@ -41,7 +41,7 @@ public class RailJunction extends RailLogicBase {
 	@Override
 	public int getBasicRailMetadata(IBlockAccess world, EntityMinecart cart, int x, int y, int z) {
 		if (cart != null){
-			float yaw = cart.rotationYaw;
+			float yaw = cart.prevRotationYaw;
 			yaw %= 180f;
 			while (yaw <=0 ) yaw += 180f;
 			if (45f <= yaw && yaw <= 135f) {

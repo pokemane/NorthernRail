@@ -127,6 +127,16 @@ public class RailBaseNR extends BlockRailBase {
 		return RailIconProvider.INSTANCE.getIconFromRailId(id);
 	}
 
+	public static void updateNRRailBlockState(World world, int x, int y, int z) {
+		int l = world.getBlockMetadata(x,y,z);
+		TileEntity tile = world.getTileEntity(x,y,z);
+		world.setBlockMetadataWithNotify(x,y,z,l,2);
+		if (tile != null) {
+			tile.validate();
+			world.setTileEntity(x, y, z, tile);
+		}
+	}
+
 	@Override
 	public void registerBlockIcons(IIconRegister iconRegister) {
 		RailIconProvider.INSTANCE.registerIcons(iconRegister);
@@ -157,6 +167,8 @@ public class RailBaseNR extends BlockRailBase {
 	public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int side, float p_149727_7_, float p_149727_8_, float p_149727_9_) {
 		TileEntity tile = world.getTileEntity(x,y,z);
 		if (tile instanceof TileEntityRail){
+			short id = ((TileEntityRail) tile).getRailId();
+			if(world.isRemote) System.out.println("rail id: " + id);
 			return ((TileEntityRail) tile).getRailType().getRailClass().onBlockActivated(player);
 		}
 		return false;
