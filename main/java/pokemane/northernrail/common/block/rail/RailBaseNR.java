@@ -330,6 +330,27 @@ public class RailBaseNR extends BlockRailBase {
 	}
 
 	/**
+	 * Called when a user uses the creative pick block button on this block
+	 *
+	 * @param target The full target the player is looking at
+	 * @param world
+	 * @param x
+	 * @param y
+	 * @param z      @return A ItemStack to add to the player's inventory, Null if nothing should be added.
+	 */
+	@Override
+	public ItemStack getPickBlock(MovingObjectPosition target, World world, int x, int y, int z) {
+		TileEntity tile = world.getTileEntity(x,y,z);
+		int id = 0;
+		if (tile instanceof TileEntityRail) {
+			id = ((TileEntityRail) tile).getRailId();
+		}
+		Item item = getItemDropped(0, world.rand, 0);
+		return new ItemStack(item, 1, id);
+		//return super.getPickBlock(target, world, x, y, z);
+	}
+
+	/**
 	 * Lets the block know when one of its neighbor changes. Doesn't know which neighbor changed (coordinates passed are
 	 * their own) Args: x, y, z, neighbor Block
 	 *

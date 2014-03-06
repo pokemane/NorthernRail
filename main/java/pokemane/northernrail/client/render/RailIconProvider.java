@@ -36,7 +36,7 @@ public class RailIconProvider implements IRailIconProvider {
 
 	public ArrayList<IIcon> getRegistryListing() {
 		ArrayList<IIcon> list = new ArrayList<IIcon>();
-		for (short i = 0; i < railTypeIIconHashMap.size(); i++) {
+		for (int i = 0; i < railTypeIIconHashMap.size(); i++) {
 			list.add(railTypeIIconHashMap.get(i));
 		}
 		return list;
