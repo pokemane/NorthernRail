@@ -1,5 +1,6 @@
 package pokemane.northernrail.core.util;
 
+import net.minecraft.block.Block;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
@@ -122,6 +123,25 @@ public class BlockPosition {
 
 	public TileEntity getTileEntity(World world) {
 		return world.getTileEntity(x,y,z);
+	}
+
+	public ForgeDirection getRelativeDirection(BlockPosition bp){
+		BlockPosition newbp = bp.copy();
+		ForgeDirection direction = ForgeDirection.UNKNOWN;
+		for (ForgeDirection dir : ForgeDirection.VALID_DIRECTIONS){
+			if (x + dir.offsetX == newbp.x && y + dir.offsetY == newbp.y && z + dir.offsetZ == newbp.z) {
+				direction = dir;
+			}
+		}
+		return direction;
+	}
+
+	public TileEntity getTileEntityAtPos(World world) {
+		return world.getTileEntity(this.x, this.y, this.z);
+	}
+
+	public Block getBlockAtPos(World world) {
+		return world.getBlock(this.x,this.y,this.z);
 	}
 
 	@Override

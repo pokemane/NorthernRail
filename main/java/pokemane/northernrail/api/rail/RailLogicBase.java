@@ -9,6 +9,9 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import pokemane.northernrail.common.block.TileEntityRail;
+import pokemane.northernrail.core.util.BlockPosition;
+
+import java.util.ArrayList;
 
 /**
  * Created by pokemane on 2/21/14.
@@ -16,7 +19,13 @@ import pokemane.northernrail.common.block.TileEntityRail;
 public abstract class RailLogicBase implements IRailLogic {
 
 	private TileEntity tileEntity;
+	private ArrayList<BlockPosition> possibleConnections;
 
+	private int connectionByte;
+
+	public int getConnectionByte() {
+		return connectionByte;
+	}
 
 	@Override
 	public int getX() {
@@ -192,5 +201,9 @@ public abstract class RailLogicBase implements IRailLogic {
 
 	@Override
 	public void changeRail(World world, int x, int y, int z, boolean bool) {
+	}
+
+	public ArrayList<BlockPosition> getPossibleConnections() {
+		return null;
 	}
 }

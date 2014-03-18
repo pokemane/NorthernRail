@@ -13,6 +13,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.*;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import net.minecraftforge.common.util.ForgeDirection;
 import pokemane.northernrail.client.render.RailIconProvider;
 import pokemane.northernrail.common.NorthernRail;
 import pokemane.northernrail.common.block.TileEntityRail;
@@ -222,6 +223,24 @@ public class RailBaseNR extends BlockRailBase {
 	@Override
 	public void onBlockDestroyedByPlayer(World p_149664_1_, int p_149664_2_, int p_149664_3_, int p_149664_4_, int p_149664_5_) {
 		super.onBlockDestroyedByPlayer(p_149664_1_, p_149664_2_, p_149664_3_, p_149664_4_, p_149664_5_);
+	}
+
+	/**
+	 * Rotate the block. For vanilla blocks this rotates around the axis passed in (generally, it should be the "face" that was hit).
+	 * Note: for mod blocks, this is up to the block and modder to decide. It is not mandated that it be a rotation around the
+	 * face, but could be a rotation to orient *to* that face, or a visiting of possible rotations.
+	 * The method should return true if the rotation was successful though.
+	 *
+	 * @param worldObj The world
+	 * @param x        X position
+	 * @param y        Y position
+	 * @param z        Z position
+	 * @param axis     The axis to rotate around
+	 * @return True if the rotation was successful, False if the rotation failed, or is not possible
+	 */
+	@Override
+	public boolean rotateBlock(World worldObj, int x, int y, int z, ForgeDirection axis) {
+		return super.rotateBlock(worldObj, x, y, z, axis);
 	}
 
 	/**
